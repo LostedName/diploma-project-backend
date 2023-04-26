@@ -1,21 +1,27 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
-import { ApplicationEntity } from './application.entity';
+import { OauthApplicationEntity } from './oauth-application.entity';
 
-@Entity({ name: 'application_client', schema: 'public' })
-export class ApplicationClientEntity extends AppEntity {
+@Entity({ name: 'oauth_client', schema: 'public' })
+export class OauthClientEntity extends AppEntity {
+  @ApiProperty({
+    example: 'Oauth client identifier',
+    description: 'Oauth client identifier',
+    type: String,
+    required: true,
+  })
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
-    example: 'Client id',
-    description: 'Application client id',
+    example: 'Oauth foreign application client public id',
+    description: 'Oauth foreign application client public id',
     type: String,
     required: true,
   })
   @Column({ unique: true })
-  client_id: string;
+  client_public: string;
 
   @ApiProperty({
     example: 'Client secret',
@@ -70,8 +76,8 @@ export class ApplicationClientEntity extends AppEntity {
   @Column()
   redirect_urls: string;
 
-  @ManyToOne(() => ApplicationEntity, (app) => app.client_applications, {
+  @ManyToOne(() => OauthApplicationEntity, (app) => app.oauth_clients, {
     onDelete: 'CASCADE',
   })
-  application: ApplicationEntity;
+  oauth_application: OauthApplicationEntity;
 }

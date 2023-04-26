@@ -180,3 +180,17 @@ export class NoteNotFound extends AppError implements HttpErrorRepresentable {
   static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
+
+//Notes
+
+export class OauthAppNotFound
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_2001, 'Oauth application not found');
+  }
+
+  static httpStatus: number = HttpStatus.NOT_FOUND;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}

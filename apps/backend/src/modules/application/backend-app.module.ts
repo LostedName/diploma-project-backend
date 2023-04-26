@@ -7,6 +7,7 @@ import { SystemSettingsGatewayModule } from '../settings/system-settings-gateway
 import { UserAuthGatewayModule } from '../user/auth/user-auth-gateway.module';
 import { AdminAuthGatewayModule } from '../admin/auth/admin-auth-gateway.module';
 import { UserNoteGatewayModule } from '../user/note/user-note-gateway.module';
+import { OauthAppGatewayModule } from '../user/oauth-application/oauth-app-gateway.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserNoteGatewayModule } from '../user/note/user-note-gateway.module';
     UserAuthGatewayModule,
     AdminAuthGatewayModule,
     UserNoteGatewayModule,
+    OauthAppGatewayModule,
   ],
   providers: [],
 })

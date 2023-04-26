@@ -36,6 +36,11 @@ export class NoteEntity extends AppEntity {
   @Column({ default: '' })
   content: string;
 
+  @ApiProperty({
+    example: null,
+    description: 'Note deletion date',
+    required: true,
+  })
   @DeleteDateColumn()
   deleted_at: Date;
 

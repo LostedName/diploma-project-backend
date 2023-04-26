@@ -4,8 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { mainDatabaseConnectionConfigFromConfigService } from './main-database-configuration';
 import { AccountEntity } from './entities/account.entity';
 import { AdminEntity } from './entities/admin.entity';
-import { ApplicationClientEntity } from './entities/application-client.entity';
-import { ApplicationEntity } from './entities/application.entity';
+import { OauthClientEntity } from './entities/oauth-client.entity';
+import { OauthApplicationEntity } from './entities/oauth-application.entity';
 import { NoteEntity } from './entities/note.entity';
 import { PasswordsEntity } from './entities/passwords.entity';
 import { SystemSettingsEntity } from './entities/system-settings.entity';
@@ -32,8 +32,8 @@ export class MainDatabaseModule {
     return TypeOrmModule.forFeature([
       AccountEntity,
       AdminEntity,
-      ApplicationClientEntity,
-      ApplicationEntity,
+      OauthClientEntity,
+      OauthApplicationEntity,
       NoteEntity,
       PasswordsEntity,
       SystemSettingsEntity,

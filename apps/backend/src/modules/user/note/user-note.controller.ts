@@ -28,7 +28,7 @@ import { NotesListDto, NotesListResponseDto } from './dto/notes-list.dto';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { EditNoteDto } from './dto/edit-note.dto';
 
-@ApiTags('User notes')
+@ApiTags('User notes CRUD')
 @ApiBearerAuth()
 @Roles(AccountRole.User)
 @UseGuards(RoleGuard)
@@ -98,7 +98,7 @@ export class UserNoteController {
   @ApiOperation({ summary: 'Get user note by id' })
   @ApiParam({
     name: 'id',
-    description: 'Note id to be returned',
+    description: 'Id of note to be returned',
     type: Number,
     required: true,
   })
@@ -115,7 +115,7 @@ export class UserNoteController {
   @ApiOperation({ summary: 'Update user note by id' })
   @ApiParam({
     name: 'id',
-    description: 'Note id to be updated',
+    description: 'Id of note to be updated',
     type: Number,
     required: true,
   })
