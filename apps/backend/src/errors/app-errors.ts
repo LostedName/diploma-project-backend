@@ -163,9 +163,20 @@ export class SystemSettingsNotFound
   implements HttpErrorRepresentable
 {
   constructor() {
-    super(100_2000, 'Settings not found');
+    super(100_1010, 'Settings not found');
   }
 
-  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  static httpStatus: number = HttpStatus.NOT_FOUND;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+//Notes
+
+export class NoteNotFound extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_2001, 'Note not found');
+  }
+
+  static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }

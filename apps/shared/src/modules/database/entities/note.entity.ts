@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
@@ -32,8 +33,11 @@ export class NoteEntity extends AppEntity {
     description: 'Note content',
     required: true,
   })
-  @Column()
+  @Column({ default: '' })
   content: string;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.notes, { onDelete: 'CASCADE' })
   @JoinColumn()
