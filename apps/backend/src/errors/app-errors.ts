@@ -194,3 +194,14 @@ export class OauthAppNotFound
   static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
+export class OauthApplicationAlreadyExist
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_2001, 'Oauth application already exist');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}

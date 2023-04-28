@@ -85,6 +85,7 @@ export class UserLoginDto {
   })
   @IsString()
   @IsNotEmpty()
+  @IsValidPassword(true)
   password: string;
 }
 

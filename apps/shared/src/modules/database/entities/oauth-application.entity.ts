@@ -22,7 +22,7 @@ export class OauthApplicationEntity extends AppEntity {
     description: 'Oauth application name',
     type: String,
   })
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @ApiProperty({

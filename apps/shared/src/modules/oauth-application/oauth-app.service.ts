@@ -1,5 +1,10 @@
 import { merge } from 'lodash';
-import { OauthAppNotFound } from './../../../../backend/src/errors/app-errors';
+import {
+  AppError,
+  InternalError,
+  OauthAppNotFound,
+  OauthApplicationAlreadyExist,
+} from './../../../../backend/src/errors/app-errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
@@ -12,6 +17,7 @@ import {
 } from 'apps/backend/src/modules/user/oauth-application/dto/oauth-apps-list.dto';
 import { CreateOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/create-oauth-app.dto';
 import { EditOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/edit-oauth-app.dto';
+import { DbUtils } from '../../utils/database/db-utils';
 
 @Injectable()
 export class OauthAppService {
@@ -32,11 +38,12 @@ export class OauthAppService {
     let queryBuilder = this.oauthAppRepository
       .createQueryBuilder('oauth_apps')
       .innerJoin('oauth_apps.user', 'user')
-      .innerJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
+      .leftJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
       .where('user.id = :userId and oauth_apps.deleted_at is null', { userId })
       .select(['oauth_apps.id', 'oauth_apps.name', 'oauth_apps.created_at']);
-
-    queryBuilder = params.filters().apply(queryBuilder);
+    if (params) {
+      queryBuilder = params.filters().apply(queryBuilder);
+    }
 
     const [items, total] = await queryBuilder.getManyAndCount();
     return {
@@ -59,6 +66,14 @@ export class OauthAppService {
     userId: number,
     createOauthAppDto: CreateOauthAppDto,
   ): Promise<OauthApplicationEntity> {
+    const { items } = await this.getUserOauthAppsList(userId, null);
+    let nameUnique = true;
+    items.forEach((item) => {
+      nameUnique = item.name !== createOauthAppDto.name && nameUnique;
+    });
+    if (!nameUnique) {
+      throw new OauthApplicationAlreadyExist();
+    }
     const oauthAppEntity = this.createOauthApp(createOauthAppDto);
     oauthAppEntity.user = <UserEntity>{ id: userId };
     const oauthApp = await this.saveOauthApp(oauthAppEntity);
@@ -105,7 +120,7 @@ export class OauthAppService {
           appId,
         },
       )
-      .innerJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
+      .leftJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
       .select([
         'oauth_apps.id',
         'oauth_apps.name',
@@ -130,5 +145,15 @@ export class OauthAppService {
 
   private async deleteOauthApp(appId: number) {
     return await this.oauthAppRepository.softDelete(appId);
+  }
+
+  private formatError(error: Error): AppError {
+    if (error instanceof AppError) {
+      return error;
+    } else if (DbUtils.isUniqueViolationError(error)) {
+      return new OauthApplicationAlreadyExist();
+    }
+
+    return new InternalError();
   }
 }
