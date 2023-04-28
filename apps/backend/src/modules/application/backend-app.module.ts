@@ -8,6 +8,7 @@ import { UserAuthGatewayModule } from '../user/auth/user-auth-gateway.module';
 import { AdminAuthGatewayModule } from '../admin/auth/admin-auth-gateway.module';
 import { UserNoteGatewayModule } from '../user/note/user-note-gateway.module';
 import { OauthAppGatewayModule } from '../user/oauth-application/oauth-app-gateway.module';
+import { OauthClientGatewayModule } from '../user/oauth-client/oauth-client-gateway.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { OauthAppGatewayModule } from '../user/oauth-application/oauth-app-gatew
     AdminAuthGatewayModule,
     UserNoteGatewayModule,
     OauthAppGatewayModule,
+    OauthClientGatewayModule,
   ],
   providers: [],
 })
