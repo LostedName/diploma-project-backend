@@ -87,6 +87,7 @@ export class OauthAppController {
   ): Promise<OauthAppsListResponseDto> {
     return this.actor.getOauthAppsList(params);
   }
+
   @ApiOperation({ summary: 'Create new user oauth application' })
   @ApiResponse({
     status: 200,

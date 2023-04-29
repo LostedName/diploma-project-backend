@@ -51,13 +51,14 @@ export class IdentityExtractorMiddleware implements NestMiddleware {
           } else {
             user = await this.userService.findUserByEmail(mainClaims.sub);
           }
-        } catch (e) {}
+        } catch (e) {
+          throw new BadToken();
+        }
 
         if (isNil(roleClaim)) {
           throw new BadToken();
         }
       }
-
       req.requestIdentity = new RequestIdentity(
         mainClaims.sub,
         user,

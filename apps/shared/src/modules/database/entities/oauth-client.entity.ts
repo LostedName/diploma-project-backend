@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  DeleteDateColumn,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
 import { OauthApplicationEntity } from './oauth-application.entity';
@@ -29,7 +35,7 @@ export class OauthClientEntity extends AppEntity {
     type: String,
     required: true,
   })
-  @Column()
+  @Column({ select: false })
   client_secret: string;
 
   @ApiProperty({
@@ -38,15 +44,15 @@ export class OauthClientEntity extends AppEntity {
     type: String,
     required: true,
   })
-  @Column({ nullable: false })
-  name: string;
+  @Column()
+  name: string; // required
 
   @ApiProperty({
     example: 'Application client description',
     description: 'Application client description',
     type: String,
   })
-  @Column({ nullable: true })
+  @Column({ default: '' })
   description: string;
 
   @ApiProperty({
@@ -55,7 +61,7 @@ export class OauthClientEntity extends AppEntity {
     type: String,
     required: true,
   })
-  @Column()
+  @Column({ nullable: true })
   icon_url: string;
 
   @ApiProperty({
@@ -75,6 +81,14 @@ export class OauthClientEntity extends AppEntity {
   })
   @Column()
   redirect_urls: string;
+
+  @ApiProperty({
+    example: null,
+    description: 'Oauth client deletion date',
+    required: true,
+  })
+  @DeleteDateColumn()
+  deleted_at: Date;
 
   @ManyToOne(() => OauthApplicationEntity, (app) => app.oauth_clients, {
     onDelete: 'CASCADE',

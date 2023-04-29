@@ -2,7 +2,7 @@ import { OauthClientModule } from './../../../../../shared/src/modules/oauth-cli
 import { LoggerModule } from './../../../../../shared/src/modules/logging/logger.module';
 import { Module } from '@nestjs/common';
 import { OauthClientActor } from './oauth-client.actor';
-import { OauthClientController } from './oauth-app.controller';
+import { OauthClientController } from './oauth-client.controller';
 
 @Module({
   imports: [OauthClientModule, LoggerModule],

@@ -50,7 +50,7 @@ export class ValidationError
   implements HttpErrorRepresentable
 {
   constructor(reasons: ErrorReason[]) {
-    super(100_0005, 'Validation error', null, reasons);
+    super(100_0001, 'Validation error', null, reasons);
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
@@ -139,7 +139,7 @@ export class UserNotFound extends AppError implements HttpErrorRepresentable {
 
 export class AdminNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
-    super(100_1008, 'Admin not found');
+    super(100_1007, 'Admin not found');
   }
 
   static httpStatus: number = HttpStatus.NOT_FOUND;
@@ -151,7 +151,7 @@ export class UserAlreadyVerified
   implements HttpErrorRepresentable
 {
   constructor() {
-    super(100_1009, 'User already verified');
+    super(100_1008, 'User already verified');
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
@@ -163,7 +163,7 @@ export class SystemSettingsNotFound
   implements HttpErrorRepresentable
 {
   constructor() {
-    super(100_1010, 'Settings not found');
+    super(100_1009, 'Settings not found');
   }
 
   static httpStatus: number = HttpStatus.NOT_FOUND;
@@ -174,34 +174,61 @@ export class SystemSettingsNotFound
 
 export class NoteNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
-    super(100_2001, 'Note not found');
+    super(100_2000, 'Note not found');
   }
 
   static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 
-//Notes
+//Oauth app
 
 export class OauthAppNotFound
   extends AppError
   implements HttpErrorRepresentable
 {
   constructor() {
-    super(100_2001, 'Oauth application not found');
+    super(100_3001, 'Oauth application not found');
   }
 
   static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
-export class OauthApplicationAlreadyExist
+
+export class OauthAppAlreadyExist
   extends AppError
   implements HttpErrorRepresentable
 {
   constructor() {
-    super(100_2001, 'Oauth application already exist');
+    super(100_3002, 'Oauth application already exist');
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+//Oauth client
+
+export class OauthClientAlreadyExist
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_4000, 'Oauth client already exist');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class OauthClientNotFound
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_4001, 'Oauth client not found');
+  }
+
+  static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }

@@ -3,7 +3,7 @@ import {
   AppError,
   InternalError,
   OauthAppNotFound,
-  OauthApplicationAlreadyExist,
+  OauthAppAlreadyExist,
 } from './../../../../backend/src/errors/app-errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -38,9 +38,8 @@ export class OauthAppService {
     let queryBuilder = this.oauthAppRepository
       .createQueryBuilder('oauth_apps')
       .innerJoin('oauth_apps.user', 'user')
-      .leftJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
-      .where('user.id = :userId and oauth_apps.deleted_at is null', { userId })
-      .select(['oauth_apps.id', 'oauth_apps.name', 'oauth_apps.created_at']);
+      .where('user.id = :userId', { userId });
+
     if (params) {
       queryBuilder = params.filters().apply(queryBuilder);
     }
@@ -72,7 +71,7 @@ export class OauthAppService {
       nameUnique = item.name !== createOauthAppDto.name && nameUnique;
     });
     if (!nameUnique) {
-      throw new OauthApplicationAlreadyExist();
+      throw new OauthAppAlreadyExist();
     }
     const oauthAppEntity = this.createOauthApp(createOauthAppDto);
     oauthAppEntity.user = <UserEntity>{ id: userId };
@@ -113,25 +112,11 @@ export class OauthAppService {
     return await this.oauthAppRepository
       .createQueryBuilder('oauth_apps')
       .innerJoin('oauth_apps.user', 'user')
-      .where(
-        'user.id = :userId and oauth_apps.id = :appId and oauth_apps.deleted_at is null',
-        {
-          userId,
-          appId,
-        },
-      )
+      .where('user.id = :userId and oauth_apps.id = :appId', {
+        userId,
+        appId,
+      })
       .leftJoinAndSelect('oauth_apps.oauth_clients', 'oauth_clients')
-      .select([
-        'oauth_apps.id',
-        'oauth_apps.name',
-        'oauth_apps.created_at',
-        'oauth_clients.client_public',
-        'oauth_clients.name',
-        'oauth_clients.description',
-        'oauth_clients.icon_url',
-        'oauth_clients.homepage_url',
-        'oauth_clients.redirect_urls',
-      ])
       .getOne();
   }
 
@@ -151,7 +136,7 @@ export class OauthAppService {
     if (error instanceof AppError) {
       return error;
     } else if (DbUtils.isUniqueViolationError(error)) {
-      return new OauthApplicationAlreadyExist();
+      return new OauthAppAlreadyExist();
     }
 
     return new InternalError();

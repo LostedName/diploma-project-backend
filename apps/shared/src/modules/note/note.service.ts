@@ -32,7 +32,7 @@ export class NoteService {
     let queryBuilder = this.noteRepository
       .createQueryBuilder('notes')
       .innerJoin('notes.user', 'user')
-      .where('user.id = :userId and deleted_at is null', { userId })
+      .where('user.id = :userId', { userId })
       .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at']);
 
     queryBuilder = params.filters().apply(queryBuilder);
@@ -91,13 +91,10 @@ export class NoteService {
     return await this.noteRepository
       .createQueryBuilder('notes')
       .innerJoin('notes.user', 'user')
-      .where(
-        'user.id = :userId and notes.id = :noteId and deleted_at is null',
-        {
-          userId,
-          noteId,
-        },
-      )
+      .where('user.id = :userId and notes.id = :noteId', {
+        userId,
+        noteId,
+      })
       .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at'])
       .getOne();
   }
