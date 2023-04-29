@@ -59,6 +59,14 @@ export class OauthClientActor extends RequestActor {
     );
   }
 
+  async generateNewClientSecret(clientId: number) {
+    const user = this.loadUserIdentity();
+    return await this.oauthClientService.generateNewClientSecret(
+      user.id,
+      clientId,
+    );
+  }
+
   private loadUserIdentity() {
     const user = this.requestIdentity.user;
     return user;

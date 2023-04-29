@@ -101,4 +101,23 @@ export class OauthClientController {
   ): Promise<OauthClientEntity> {
     return this.actor.editOauthClient(params.clientId, editOauthClientDto);
   }
+
+  @ApiOperation({ summary: 'Generate new user oauth client secret' })
+  @ApiParam({
+    name: 'clientId',
+    description: 'Id of oauth client to be updated',
+    type: Number,
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    type: OauthClientEntity,
+    description: 'Returns updated oauth client',
+  })
+  @Get('/generate-client/:clientId')
+  async generateNewOauthClientSecret(
+    @Param() params: GetOauthClientParamsDto,
+  ): Promise<OauthClientEntity> {
+    return this.actor.generateNewClientSecret(params.clientId);
+  }
 }

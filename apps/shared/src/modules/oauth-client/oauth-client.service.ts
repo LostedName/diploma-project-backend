@@ -111,6 +111,22 @@ export class OauthClientService {
     return await this.findUserOauthClientById(userId, newOauthClient.id);
   }
 
+  async generateNewClientSecret(userId: number, clientId: number) {
+    const oauthClient = await this.findUserOauthClientById(userId, clientId);
+    if (!oauthClient) {
+      throw new OauthClientNotFound();
+    }
+    const clientSecret = this.generateClientSecret();
+    const hashedClientSecret = await this.encryptClientSecret(clientSecret);
+
+    oauthClient.client_secret = hashedClientSecret;
+
+    const savedOauthClient = await this.saveOauthClient(oauthClient);
+
+    savedOauthClient.client_secret = clientSecret;
+    return savedOauthClient;
+  }
+
   async findUserOauthClientById(
     userId: number,
     clientId: number,
