@@ -1,3 +1,4 @@
+import { CredentialsAreIncorrect } from './../../../../../shared/src/errors/app-errors';
 import {
   AccountRole,
   AccountStatus,
@@ -9,8 +10,7 @@ import { isNil } from 'lodash';
 import { AuthorisationService } from '../../../../../shared/src/modules/authorisation/authorisation.service';
 import { AdminRegisterDto } from './dto/admin-register.dto';
 import { AdminService } from '../../../../../shared/src/modules/admin/admin.service';
-import { CredentialsAreIncorrect } from '../../../errors/app-errors';
-import { RequestActor } from '../../../actor/request.actor';
+import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { AccountPasswordsService } from '../../../../../shared/src/modules/authentication/account-passwords.service';
 import { PasswordAuthenticator } from '../../../../../shared/src/modules/authentication/authenticators/password-authenticator';
 

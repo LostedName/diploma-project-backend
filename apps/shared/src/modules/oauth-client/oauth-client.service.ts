@@ -1,9 +1,5 @@
 import { merge } from 'lodash';
 import { EditOauthClientDto } from './../../../../backend/src/modules/user/oauth-client/dto/edit-oauth-client.dto';
-import {
-  OauthClientAlreadyExist,
-  OauthClientNotFound,
-} from './../../../../backend/src/errors/app-errors';
 import { CreateOauthClientDto } from './../../../../backend/src/modules/user/oauth-client/dto/create-oauth-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,6 +10,10 @@ import { OauthAppService } from '../oauth-application/oauth-app.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { OauthApplicationEntity } from '../database/entities/oauth-application.entity';
+import {
+  OauthClientAlreadyExist,
+  OauthClientNotFound,
+} from '../../errors/app-errors';
 
 @Injectable()
 export class OauthClientService {

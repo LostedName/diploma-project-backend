@@ -1,7 +1,8 @@
+import { RequestActor } from './../../../../../shared/src/actor/request.actor';
 import {
   CredentialsAreIncorrect,
   UserNotFound,
-} from './../../../errors/app-errors';
+} from './../../../../../shared/src/errors/app-errors';
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import {
   AuthenticationService,
@@ -11,7 +12,6 @@ import { AuthorisationService } from './../../../../../shared/src/modules/author
 import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
 import { UserService } from './../../../../../shared/src/modules/user/user.service';
 import { PasswordAuthenticator } from './../../../../../shared/src/modules/authentication/authenticators/password-authenticator';
-import { RequestActor } from './../../../actor/request.actor';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import {

@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { isNil } from 'lodash';
-import { CredentialsAreIncorrect } from '../../../../backend/src/errors/app-errors';
 import { PasswordAuthenticator } from './authenticators/password-authenticator';
 import { PasswordsEntity } from '../database/entities/passwords.entity';
 import { AccountEntity } from '../database/entities/account.entity';
+import { CredentialsAreIncorrect } from '../../errors/app-errors';
 
 @Injectable()
 export class AccountPasswordsService {

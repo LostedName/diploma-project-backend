@@ -1,7 +1,7 @@
 import { NoteEntity } from './../../../../../shared/src/modules/database/entities/note.entity';
 import { NoteService } from './../../../../../shared/src/modules/note/note.service';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
-import { RequestActor } from './../../../actor/request.actor';
+import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import { NotesListDto, NotesListResponseDto } from './dto/notes-list.dto';
 import { CreateNoteDto } from './dto/create-note.dto';

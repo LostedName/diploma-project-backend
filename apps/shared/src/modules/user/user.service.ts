@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { isNil } from 'lodash';
-import { UserNotFound } from '../../../../backend/src/errors/app-errors';
 import { UserEntity } from '../database/entities/user.entity';
 import { AccountEntity } from '../database/entities/account.entity';
+import { UserNotFound } from '../../errors/app-errors';
 
 @Injectable()
 export class UserService {

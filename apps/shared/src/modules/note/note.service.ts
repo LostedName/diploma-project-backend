@@ -2,7 +2,6 @@ import { merge } from 'lodash';
 import { EditNoteDto } from './../../../../backend/src/modules/user/note/dto/edit-note.dto';
 import { NoteEntity } from './../database/entities/note.entity';
 import { CreateNoteDto } from './../../../../backend/src/modules/user/note/dto/create-note.dto';
-import { NoteNotFound } from './../../../../backend/src/errors/app-errors';
 import {
   NotesListDto,
   NotesListResponseDto,
@@ -12,6 +11,7 @@ import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
 import { AppLogger } from '../logging/logger.service';
 import { UserEntity } from '../database/entities/user.entity';
+import { NoteNotFound } from '../../errors/app-errors';
 
 @Injectable()
 export class NoteService {

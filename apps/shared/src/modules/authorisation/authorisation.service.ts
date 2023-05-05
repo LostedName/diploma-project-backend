@@ -5,17 +5,17 @@ import {
   AppAuthorisation,
   AuthorisationClaims,
   MainClaims,
+  OAuthClaims,
 } from './authorisations/app-authorisation';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { BadToken } from '../../../../backend/src/errors/app-errors';
 import { isNil } from 'lodash';
 import { SystemSettingsService } from '../system-settings/system-settings.service';
 import { add, isPast } from 'date-fns';
 import {
   AccountEntity,
   AccountRole,
-  AuthenticationMethod,
 } from '../database/entities/account.entity';
+import { BadToken } from '../../errors/app-errors';
 
 @Injectable()
 export class AuthorisationService {
@@ -63,6 +63,27 @@ export class AuthorisationService {
     return userAccess;
   }
 
+  async authoriseUserOAuthAccess(
+    account: AccountEntity,
+    clientId: string,
+    scopes: string[],
+  ): Promise<AppAuthorisation> {
+    const { oauth_session_duration_seconds } =
+      await this.systemSettingsService.getCachedSystemSettings();
+
+    const expireDate = add(new Date(), {
+      seconds: oauth_session_duration_seconds,
+    });
+
+    const userOAuthAccess = AppAuthorisation.createOAuthAccessAuthorization(
+      this.createMainClaims(account, expireDate),
+      AuthorisationClaims.createRoleClaim(AccountRole.User),
+      this.createOAuthClaims(clientId, scopes),
+    );
+
+    return userOAuthAccess;
+  }
+
   async encodeAuthorisation(authorisation: AppAuthorisation) {
     const payload = instanceToPlain(authorisation);
 
@@ -96,6 +117,10 @@ export class AuthorisationService {
       expireDate,
       account?.email || null,
     );
+  }
+
+  private createOAuthClaims(clientId: string, scopes: string[]): OAuthClaims {
+    return AuthorisationClaims.createOAuthClaim(clientId, scopes);
   }
 
   private async validateMainClaim(mainClaim: MainClaims) {

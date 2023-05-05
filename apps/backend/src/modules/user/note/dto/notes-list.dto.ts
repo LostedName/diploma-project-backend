@@ -5,13 +5,9 @@ import {
   PaginationExpression,
   PaginationExpressionParams,
 } from '../../../../../../shared/src/utils/query-expression/expressions/pagination-expression';
-import {
-  EqFilterQueryBooleanParam,
-  EqFilterQueryNumberParam,
-} from '../../../../../../shared/src/utils/query-expression/expressions/eq-expression';
+import { EqFilterQueryNumberParam } from '../../../../../../shared/src/utils/query-expression/expressions/eq-expression';
 import { SortQueryParams } from '../../../../../../shared/src/utils/query-expression/expressions/sort-expression';
 import { BetweenFilterDateQueryParam } from '../../../../../../shared/src/utils/query-expression/expressions/between-expression';
-import { LikeQueryParams } from '../../../../../../shared/src/utils/query-expression/expressions/like-expression';
 import { QueryExpression } from '../../../../../../shared/src/utils/query-expression/query-expressions';
 import { QueryExpressionFactory } from '../../../../../../shared/src/utils/query-expression/factory/query-expression-factory';
 

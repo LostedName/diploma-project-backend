@@ -1,6 +1,6 @@
 import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
 import { AuthenticationService } from './../../../../../shared/src/modules/authentication/authentication.service';
-import { RequestActor } from './../../../actor/request.actor';
+import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { UserService } from './../../../../../shared/src/modules/user/user.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';

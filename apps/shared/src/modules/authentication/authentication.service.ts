@@ -3,12 +3,6 @@ import { AppLogger } from '../logging/logger.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { isNil } from 'lodash';
-import {
-  AccountAlreadyExists,
-  AccountNotFound,
-  CredentialsAreIncorrect,
-  InternalError,
-} from '../../../../backend/src/errors/app-errors';
 import { DbUtils } from '../../utils/database/db-utils';
 import { PasswordAuthenticator } from './authenticators/password-authenticator';
 import {
@@ -17,6 +11,12 @@ import {
   AccountStatus,
   AuthenticationMethod,
 } from '../database/entities/account.entity';
+import {
+  AccountAlreadyExists,
+  AccountNotFound,
+  CredentialsAreIncorrect,
+  InternalError,
+} from '../../errors/app-errors';
 
 export type AuthenticatedIdentity = { email: string };
 

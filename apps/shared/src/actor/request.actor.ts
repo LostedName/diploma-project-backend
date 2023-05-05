@@ -3,7 +3,7 @@ import { REQUEST } from '@nestjs/core';
 import {
   RequestIdentity,
   RequestWithIdentity,
-} from '../modules/request-identity/request-identity';
+} from '../../../backend/src/modules/request-identity/request-identity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class RequestActor {

@@ -1,9 +1,9 @@
+import { ValidationErrorFactory } from 'apps/shared/src/errors/validation-error-factory';
+import { ApiExceptionFilter } from './../../shared/src/errors/api-exception.filter';
 import { SanitizeDtoPipe } from './../../shared/src/utils/pipes/sanitize-dto.pipe';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { BackendAppModule } from './modules/application/backend-app.module';
-import { ApiExceptionFilter } from './errors/api-exception.filter';
-import { ValidationErrorFactory } from './errors/validation-error-factory';
 import { SwaggerDocs } from './modules/swagger/swagger-docs';
 
 async function bootstrap() {
@@ -29,5 +29,6 @@ async function bootstrap() {
   const appPort = process.env.BACKEND_PORT || 3000;
 
   await app.listen(appPort);
+  console.log('Resource server started on PORT: ', appPort);
 }
 bootstrap();

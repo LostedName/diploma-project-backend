@@ -38,6 +38,23 @@ export class RoleClaims {
   }
 }
 
+export class OAuthClaims {
+  @IsString()
+  @IsNotEmpty()
+  readonly clientId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly scopes: string; //space separated scopes
+
+  constructor(clientId: string, scopes: string[]) {
+    this.clientId = clientId;
+    this.scopes = scopes.join(' ');
+  }
+}
+
+export type Claims = MainClaims | RoleClaims | OAuthClaims;
+
 export class AuthorisationClaims {
   static createMainClaim(
     issuedAt: Date,
@@ -50,6 +67,10 @@ export class AuthorisationClaims {
   static createRoleClaim(role: AccountRole): RoleClaims {
     return new RoleClaims(role);
   }
+
+  static createOAuthClaim(clientId: string, scopes: string[]): OAuthClaims {
+    return new OAuthClaims(clientId, scopes);
+  }
 }
 
 export class AppAuthorisation {
@@ -60,7 +81,15 @@ export class AppAuthorisation {
     return this.createAuthorisation([mainClaims, roleClaims]);
   }
 
-  private static createAuthorisation(claims: any[]) {
+  static createOAuthAccessAuthorization(
+    mainClaims: MainClaims,
+    roleClaims: RoleClaims,
+    oauthClaims: OAuthClaims,
+  ): AppAuthorisation {
+    return this.createAuthorisation([mainClaims, roleClaims, oauthClaims]);
+  }
+
+  private static createAuthorisation(claims: Claims[]) {
     const authorisation = new AppAuthorisation();
     claims.forEach((claim) => Object.assign(authorisation, claim));
     return authorisation;

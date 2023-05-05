@@ -1,10 +1,4 @@
 import { merge } from 'lodash';
-import {
-  AppError,
-  InternalError,
-  OauthAppNotFound,
-  OauthAppAlreadyExist,
-} from './../../../../backend/src/errors/app-errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
@@ -18,6 +12,12 @@ import {
 import { CreateOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/create-oauth-app.dto';
 import { EditOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/edit-oauth-app.dto';
 import { DbUtils } from '../../utils/database/db-utils';
+import {
+  AppError,
+  InternalError,
+  OauthAppAlreadyExist,
+  OauthAppNotFound,
+} from '../../errors/app-errors';
 
 @Injectable()
 export class OauthAppService {

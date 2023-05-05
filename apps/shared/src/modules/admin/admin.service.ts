@@ -1,10 +1,10 @@
-import { AdminNotFound } from './../../../../backend/src/errors/app-errors';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { isNil } from 'lodash';
 import { AdminEntity } from '../database/entities/admin.entity';
 import { AccountEntity } from '../database/entities/account.entity';
+import { AdminNotFound } from '../../errors/app-errors';
 
 @Injectable()
 export class AdminService {

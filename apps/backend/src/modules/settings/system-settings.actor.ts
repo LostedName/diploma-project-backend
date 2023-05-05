@@ -1,10 +1,10 @@
+import { SystemSettingsNotFound } from './../../../../shared/src/errors/app-errors';
 import { SystemSettingsEntity } from './../../../../shared/src/modules/database/entities/system-settings.entity';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
-import { RequestActor } from '../../actor/request.actor';
+import { RequestActor } from '../../../../shared/src/actor/request.actor';
 import { SystemSettingsService } from '../../../../shared/src/modules/system-settings/system-settings.service';
 import { AppLogger } from '../../../../shared/src/modules/logging/logger.service';
 import { isNil } from 'lodash';
-import { SystemSettingsNotFound } from '../../errors/app-errors';
 import { UpdateSystemSettingsDto } from './dto/update-system-settings.dto';
 import { DefaultSystemSettings } from '../../../../shared/src/modules/system-settings/default-system-settings';
 

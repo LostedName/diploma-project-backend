@@ -3,7 +3,7 @@ import { AdminService } from '../../../../../shared/src/modules/admin/admin.serv
 import { AccountPasswordsService } from '../../../../../shared/src/modules/authentication/account-passwords.service';
 import { AuthenticationService } from '../../../../../shared/src/modules/authentication/authentication.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
-import { RequestActor } from '../../../actor/request.actor';
+import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AdminActor extends RequestActor {

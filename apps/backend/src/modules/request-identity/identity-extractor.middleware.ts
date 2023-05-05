@@ -1,3 +1,4 @@
+import { BadToken } from './../../../../shared/src/errors/app-errors';
 import { UserService } from './../../../../shared/src/modules/user/user.service';
 import { AdminEntity } from './../../../../shared/src/modules/database/entities/admin.entity';
 import { UserEntity } from './../../../../shared/src/modules/database/entities/user.entity';
@@ -12,7 +13,6 @@ import {
   RoleClaims,
 } from '../../../../shared/src/modules/authorisation/authorisations/app-authorisation';
 import { AdminService } from '../../../../shared/src/modules/admin/admin.service';
-import { BadToken } from '../../errors/app-errors';
 
 export function extractRequestIdentity(
   request: RequestWithIdentity,

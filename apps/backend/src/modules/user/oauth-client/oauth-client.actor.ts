@@ -1,6 +1,6 @@
 import { OauthClientEntity } from './../../../../../shared/src/modules/database/entities/oauth-client.entity';
 import { OauthClientService } from './../../../../../shared/src/modules/oauth-client/oauth-client.service';
-import { RequestActor } from './../../../actor/request.actor';
+import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import { CreateOauthClientDto } from './dto/create-oauth-client.dto';
