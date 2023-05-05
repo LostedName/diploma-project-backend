@@ -51,19 +51,6 @@ export class UserAccountRegistrationDto {
   @MaxLength(25)
   @ApiProperty()
   lastName: string;
-
-  @IsPhoneNumber()
-  @IsNotEmpty()
-  @ApiProperty()
-  phoneNumber: string;
-
-  @Transform((val) => parseInt(val.value))
-  @IsEnum(UserGender)
-  gender: UserGender;
-
-  @Type(() => Date)
-  @IsDate()
-  birthDate: Date;
 }
 
 export class UserLoginDto {

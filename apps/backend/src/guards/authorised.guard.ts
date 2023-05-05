@@ -1,7 +1,7 @@
+import { UnauthorisedAction } from './../../../shared/src/errors/app-errors';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { extractRequestIdentity } from '../modules/request-identity/identity-extractor.middleware';
 import { isNil } from 'lodash';
-import { UnauthorisedAction } from '../errors/app-errors';
 
 @Injectable()
 export class AuthorisedGuard implements CanActivate {

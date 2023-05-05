@@ -53,19 +53,4 @@ export class AdminEntity extends AppEntity {
   })
   @Column({ nullable: true })
   last_name: string;
-
-  @ApiProperty({
-    description: 'Admin phone number',
-    required: true,
-  })
-  @Column({ nullable: true })
-  phone_number: string;
-
-  @ApiProperty({
-    example: '1',
-    description: 'Admin gender',
-    required: true,
-  })
-  @Column({ nullable: true })
-  gender: AdminGender;
 }

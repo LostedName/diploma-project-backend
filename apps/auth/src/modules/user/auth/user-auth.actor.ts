@@ -52,9 +52,6 @@ export class UserAuthActor extends RequestActor {
     await this.userService.createUser(account, {
       first_name: registerData.firstName,
       last_name: registerData.lastName,
-      phone_number: registerData.phoneNumber,
-      gender: registerData.gender,
-      birth_date: registerData.birthDate,
     });
 
     let user: UserEntity;

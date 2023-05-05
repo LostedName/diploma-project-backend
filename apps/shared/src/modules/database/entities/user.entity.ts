@@ -57,28 +57,6 @@ export class UserEntity extends AppEntity {
   @Column()
   last_name: string;
 
-  @ApiProperty({
-    description: 'User phone number',
-    required: true,
-  })
-  @Column()
-  phone_number: string;
-
-  @ApiProperty({
-    example: '1',
-    description: 'User gender',
-    required: true,
-  })
-  @Column()
-  gender: UserGender;
-
-  @ApiProperty({
-    description: 'User birth date',
-    required: true,
-  })
-  @Column()
-  birth_date: Date;
-
   @OneToMany(() => NoteEntity, (note) => note.user, { cascade: true })
   @JoinColumn({ name: 'user_id' })
   notes: NoteEntity[];
