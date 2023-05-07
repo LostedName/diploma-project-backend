@@ -1,3 +1,4 @@
+import { Scopes } from './../../../guards/oauth.guard';
 import { SortQueryExpression } from './../../../../../shared/src/utils/query-expression/expressions/sort-expression';
 import { PaginationExpression } from './../../../../../shared/src/utils/query-expression/expressions/pagination-expression';
 import { NoteEntity } from './../../../../../shared/src/modules/database/entities/note.entity';
@@ -27,6 +28,8 @@ import { Roles } from 'apps/backend/src/guards/role.guard';
 import { NotesListDto, NotesListResponseDto } from './dto/notes-list.dto';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { EditNoteDto } from './dto/edit-note.dto';
+
+//7:22:21 time code
 
 @ApiTags('User notes CRUD')
 @ApiBearerAuth()
@@ -77,6 +80,7 @@ export class UserNoteController {
     type: NotesListResponseDto,
     description: 'Returns list of notes',
   })
+  @Scopes('scope', 'scope 2')
   @Get('/list')
   async getNotesList(
     @Query() params: NotesListDto,

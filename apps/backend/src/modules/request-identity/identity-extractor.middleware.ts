@@ -10,6 +10,7 @@ import { RequestIdentity, RequestWithIdentity } from './request-identity';
 import { AuthorisationService } from '../../../../shared/src/modules/authorisation/authorisation.service';
 import {
   MainClaims,
+  OAuthClaims,
   RoleClaims,
 } from '../../../../shared/src/modules/authorisation/authorisations/app-authorisation';
 import { AdminService } from '../../../../shared/src/modules/admin/admin.service';
@@ -34,7 +35,7 @@ export class IdentityExtractorMiddleware implements NestMiddleware {
     next: NextFunction,
   ): Promise<any> {
     const token = this.extractToken(req);
-
+    console.log('Extract middleware');
     if (isNil(token)) {
       req.requestIdentity = RequestIdentity.createAnonymous();
     } else {

@@ -47,9 +47,13 @@ export class OAuthClaims {
   @IsNotEmpty()
   readonly scopes: string; //space separated scopes
 
-  constructor(clientId: string, scopes: string[]) {
+  constructor(clientId: string, scopes: string) {
     this.clientId = clientId;
-    this.scopes = scopes.join(' ');
+    this.scopes = scopes;
+  }
+
+  getScopes() {
+    return this.scopes.split(' ');
   }
 }
 
@@ -69,7 +73,7 @@ export class AuthorisationClaims {
   }
 
   static createOAuthClaim(clientId: string, scopes: string[]): OAuthClaims {
-    return new OAuthClaims(clientId, scopes);
+    return new OAuthClaims(clientId, scopes.join(' '));
   }
 }
 
@@ -106,3 +110,8 @@ export class AppAuthorisation {
     }
   }
 }
+// {
+//   code: "asdasdasfewgegsrs",
+//   scopes: "asdsad asdasdas sdasdasdas",
+//   client_id: "asdasdasdas",
+// }

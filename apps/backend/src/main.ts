@@ -20,7 +20,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalPipes(new SanitizeDtoPipe());
-
   app.useGlobalFilters(new ApiExceptionFilter());
 
   // Documentation
