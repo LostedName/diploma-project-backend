@@ -1,19 +1,19 @@
-import { merge } from 'lodash';
-import { EditOauthClientDto } from './../../../../backend/src/modules/user/oauth-client/dto/edit-oauth-client.dto';
-import { CreateOauthClientDto } from './../../../../backend/src/modules/user/oauth-client/dto/create-oauth-client.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Injectable, LoggerService } from '@nestjs/common';
-import { AppLogger } from '../logging/logger.service';
-import { OauthClientEntity } from '../database/entities/oauth-client.entity';
-import { OauthAppService } from '../oauth-application/oauth-app.service';
-import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
-import { OauthApplicationEntity } from '../database/entities/oauth-application.entity';
+import { EditOauthClientDto } from './../../../../../backend/src/modules/user/oauth-client/dto/edit-oauth-client.dto';
 import {
   OauthClientAlreadyExist,
   OauthClientNotFound,
-} from '../../errors/app-errors';
+} from './../../../errors/app-errors';
+import { CreateOauthClientDto } from './../../../../../backend/src/modules/user/oauth-client/dto/create-oauth-client.dto';
+import { merge } from 'lodash';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Injectable, LoggerService } from '@nestjs/common';
+import { OauthAppService } from '../oauth-application/oauth-app.service';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { OauthClientEntity } from '../../database/entities/oauth-client.entity';
+import { AppLogger } from '../../logging/logger.service';
+import { OauthApplicationEntity } from '../../database/entities/oauth-application.entity';
 
 @Injectable()
 export class OauthClientService {

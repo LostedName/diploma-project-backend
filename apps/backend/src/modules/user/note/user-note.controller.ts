@@ -1,3 +1,7 @@
+import {
+  noteReadScope,
+  noteScope,
+} from './../../../../../shared/src/modules/oauth/scopes/scopes';
 import { Scopes } from './../../../guards/oauth.guard';
 import { SortQueryExpression } from './../../../../../shared/src/utils/query-expression/expressions/sort-expression';
 import { PaginationExpression } from './../../../../../shared/src/utils/query-expression/expressions/pagination-expression';
@@ -80,7 +84,7 @@ export class UserNoteController {
     type: NotesListResponseDto,
     description: 'Returns list of notes',
   })
-  @Scopes('scope', 'scope 2')
+  @Scopes(noteScope, noteReadScope)
   @Get('/list')
   async getNotesList(
     @Query() params: NotesListDto,
@@ -94,6 +98,7 @@ export class UserNoteController {
     type: NoteEntity,
     description: 'Returns new created note',
   })
+  @Scopes(noteScope)
   @Post('')
   async createNote(@Body() createNoteDto: CreateNoteDto): Promise<NoteEntity> {
     return this.actor.createNote(createNoteDto);
@@ -111,6 +116,7 @@ export class UserNoteController {
     type: NoteEntity,
     description: 'Returns note by id',
   })
+  @Scopes(noteScope, noteReadScope)
   @Get('/:id')
   async getNote(@Param('id') noteId: number): Promise<NoteEntity> {
     return this.actor.getNote(noteId);
@@ -128,6 +134,7 @@ export class UserNoteController {
     type: NoteEntity,
     description: 'Returns updated note',
   })
+  @Scopes(noteScope)
   @Patch('/:id')
   async editNote(
     @Param('id') noteId: number,
@@ -148,6 +155,7 @@ export class UserNoteController {
     type: NoteEntity,
     description: 'Returns deleted note',
   })
+  @Scopes(noteScope)
   @Delete('/:id')
   async deleteNote(@Param('id') noteId: number): Promise<NoteEntity> {
     return this.actor.deleteNote(noteId);

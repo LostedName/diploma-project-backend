@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MainDatabaseModule } from '../database/main-database.module';
-import { LoggerModule } from '../logging/logger.module';
+import { MainDatabaseModule } from '../../database/main-database.module';
+import { LoggerModule } from '../../logging/logger.module';
 import { OauthClientService } from './oauth-client.service';
 import { OauthAppModule } from '../oauth-application/oauth-app.module';
 

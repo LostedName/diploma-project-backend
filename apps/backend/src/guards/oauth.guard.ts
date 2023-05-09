@@ -1,3 +1,4 @@
+import { OAuthScope } from './../../../shared/src/modules/oauth/scopes/scope-definition';
 import { ForbiddenAction } from './../../../shared/src/errors/app-errors';
 import {
   CanActivate,
@@ -11,7 +12,11 @@ import { isNil } from 'lodash';
 import { OAuthClaims } from '../../../shared/src/modules/authorisation/authorisations/app-authorisation';
 
 export const SCOPES_KEY = 'scopes';
-export const Scopes = (...scopes: string[]) => SetMetadata(SCOPES_KEY, scopes);
+export const Scopes = (...scopes: OAuthScope[]) =>
+  SetMetadata(
+    SCOPES_KEY,
+    scopes.map((scope) => scope.identifier),
+  );
 
 @Injectable()
 export class OauthGuard implements CanActivate {
@@ -46,7 +51,7 @@ export class OauthGuard implements CanActivate {
       }
 
       const allowedTokenScopes = oauthClaims.getScopes();
-      let accessAllowed = false;
+      let accessAllowed = false || allowedMethodScopes.length === 0;
 
       console.log('Allowed method scopes: ', allowedMethodScopes);
       console.log('Allowed token scopes: ', allowedTokenScopes);

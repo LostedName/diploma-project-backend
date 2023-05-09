@@ -2,13 +2,12 @@ import { SystemSettingsEntity } from './../../../../shared/src/modules/database/
 import { AccountRole } from './../../../../shared/src/modules/database/entities/account.entity';
 import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { SystemSettingsActor } from './system-settings.actor';
-import { Roles } from '../../guards/role.guard';
+import { RoleGuard, Roles } from '../../guards/role.guard';
 import { UpdateSystemSettingsDto } from './dto/update-system-settings.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthorisedGuard } from '../../guards/authorised.guard';
 
 @ApiTags('System settings')
-@UseGuards(AuthorisedGuard)
+@UseGuards(RoleGuard)
 @Roles(AccountRole.Admin)
 @Controller('api/settings')
 export class SystemSettingsController {

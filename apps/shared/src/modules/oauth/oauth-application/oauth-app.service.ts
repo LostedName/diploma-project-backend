@@ -2,22 +2,22 @@ import { merge } from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
-import { AppLogger } from '../logging/logger.service';
-import { UserEntity } from '../database/entities/user.entity';
-import { OauthApplicationEntity } from '../database/entities/oauth-application.entity';
+import { AppLogger } from '../../logging/logger.service';
+import { UserEntity } from '../../database/entities/user.entity';
+import { OauthApplicationEntity } from '../../database/entities/oauth-application.entity';
 import {
   OauthAppsListDto,
   OauthAppsListResponseDto,
 } from 'apps/backend/src/modules/user/oauth-application/dto/oauth-apps-list.dto';
 import { CreateOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/create-oauth-app.dto';
 import { EditOauthAppDto } from 'apps/backend/src/modules/user/oauth-application/dto/edit-oauth-app.dto';
-import { DbUtils } from '../../utils/database/db-utils';
+import { DbUtils } from '../../../utils/database/db-utils';
 import {
   AppError,
   InternalError,
   OauthAppAlreadyExist,
   OauthAppNotFound,
-} from '../../errors/app-errors';
+} from '../../../errors/app-errors';
 
 @Injectable()
 export class OauthAppService {
