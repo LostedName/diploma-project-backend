@@ -52,6 +52,7 @@ export class UserAuthActor extends RequestActor {
     await this.userService.createUser(account, {
       first_name: registerData.firstName,
       last_name: registerData.lastName,
+      avatar_url: registerData.avatarUrl || null,
     });
 
     let user: UserEntity;

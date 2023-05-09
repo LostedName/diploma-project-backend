@@ -1,22 +1,56 @@
+import {
+  ForbiddenAction,
+  UserNotFound,
+} from './../../../../../shared/src/errors/app-errors';
+import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
 import { AuthenticationService } from './../../../../../shared/src/modules/authentication/authentication.service';
 import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { UserService } from './../../../../../shared/src/modules/user/user.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
+import { UpdateUserProfileDto } from './dto/update-user.dto';
+import { isNil } from 'lodash';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserActor extends RequestActor {
   private logger: LoggerService;
 
-  constructor(
-    private readonly authenticationService: AuthenticationService,
-    private readonly passwordsService: AccountPasswordsService,
-    private readonly adminService: UserService,
-    logger: AppLogger,
-  ) {
+  constructor(private readonly userService: UserService, logger: AppLogger) {
     super();
 
     this.logger = logger.withContext('UserActor');
+  }
+
+  async getUserProfile(): Promise<UserEntity> {
+    const user = this.getUserIdentity();
+    return await this.userService.findUserById(user.account.id);
+  }
+
+  async updateUserProfile(
+    updateUserDto: UpdateUserProfileDto,
+  ): Promise<UserEntity> {
+    const user = this.getUserIdentity();
+    return await this.userService.updateUser(user, {
+      first_name: updateUserDto.firstName,
+      last_name: updateUserDto.lastName,
+      avatar_url: updateUserDto.avatarUrl,
+    });
+  }
+
+  private getUserIdentity(): UserEntity {
+    const user = this.requestIdentity.user;
+
+    if (isNil(user)) {
+      throw new UserNotFound();
+    }
+
+    const { account } = user;
+
+    if (!account) {
+      throw new ForbiddenAction();
+    }
+
+    return user as UserEntity;
   }
 }
