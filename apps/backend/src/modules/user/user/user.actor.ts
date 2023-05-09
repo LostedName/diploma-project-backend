@@ -4,19 +4,23 @@ import {
 } from './../../../../../shared/src/errors/app-errors';
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
-import { AuthenticationService } from './../../../../../shared/src/modules/authentication/authentication.service';
 import { RequestActor } from '../../../../../shared/src/actor/request.actor';
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { UserService } from './../../../../../shared/src/modules/user/user.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import { UpdateUserProfileDto } from './dto/update-user.dto';
 import { isNil } from 'lodash';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserActor extends RequestActor {
   private logger: LoggerService;
 
-  constructor(private readonly userService: UserService, logger: AppLogger) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly passwordsService: AccountPasswordsService,
+    logger: AppLogger,
+  ) {
     super();
 
     this.logger = logger.withContext('UserActor');
@@ -36,6 +40,23 @@ export class UserActor extends RequestActor {
       last_name: updateUserDto.lastName,
       avatar_url: updateUserDto.avatarUrl,
     });
+  }
+
+  async updateUserPassword(
+    updatePasswordDto: UpdateUserPasswordDto,
+  ): Promise<UserEntity> {
+    const user = this.getUserIdentity();
+
+    const oldPassword = updatePasswordDto.oldPassword;
+    const newPassword = updatePasswordDto.newPassword;
+
+    await this.passwordsService.hasBoundPassword(
+      user.account.email,
+      oldPassword,
+    );
+    await this.passwordsService.changePassword(user.account, newPassword);
+
+    return user;
   }
 
   private getUserIdentity(): UserEntity {

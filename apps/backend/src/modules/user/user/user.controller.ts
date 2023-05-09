@@ -16,6 +16,7 @@ import {
 import { UserActor } from './user.actor';
 import { UpdateUserProfileDto } from './dto/update-user.dto';
 import { Scopes } from 'apps/backend/src/guards/oauth.guard';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @ApiTags('User CRUD')
 @ApiBearerAuth()
@@ -47,14 +48,28 @@ export class UserController {
     type: UserEntity,
     description: 'Return updated user',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Old password does not match',
-  })
   @ApiBody({ type: UpdateUserProfileDto, required: true })
   @Scopes(userFullScope)
   @Patch('')
   async updateProfile(@Body() body: UpdateUserProfileDto): Promise<UserEntity> {
     return await this.actor.updateUserProfile(body);
+  }
+
+  @ApiOperation({ summary: 'Update user password' })
+  @ApiResponse({
+    status: 200,
+    type: UserEntity,
+    description: 'Return updated user',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Old password does not match',
+  })
+  @ApiBody({ type: UpdateUserPasswordDto, required: true })
+  @Patch('password')
+  async updateUserPassword(
+    @Body() body: UpdateUserPasswordDto,
+  ): Promise<UserEntity> {
+    return await this.actor.updateUserPassword(body);
   }
 }
