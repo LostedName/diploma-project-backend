@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
-import { OauthApplicationEntity } from './oauth-application.entity';
+import { UserEntity } from './user.entity';
 
 @Entity({ name: 'oauth_client', schema: 'public' })
 export class OauthClientEntity extends AppEntity {
@@ -44,7 +44,7 @@ export class OauthClientEntity extends AppEntity {
     type: String,
     required: true,
   })
-  @Column()
+  @Column({ unique: true })
   name: string; // required
 
   @ApiProperty({
@@ -90,8 +90,8 @@ export class OauthClientEntity extends AppEntity {
   @DeleteDateColumn()
   deleted_at: Date;
 
-  @ManyToOne(() => OauthApplicationEntity, (app) => app.oauth_clients, {
+  @ManyToOne(() => UserEntity, (user) => user.oauth_clients, {
     onDelete: 'CASCADE',
   })
-  oauth_application: OauthApplicationEntity;
+  user: UserEntity;
 }

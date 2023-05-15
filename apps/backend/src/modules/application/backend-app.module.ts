@@ -7,7 +7,6 @@ import { IdentityExtractorModule } from '../request-identity/identity-extractor.
 import { SystemSettingsGatewayModule } from '../settings/system-settings-gateway.module';
 import { AdminAuthGatewayModule } from '../admin/auth/admin-auth-gateway.module';
 import { UserNoteGatewayModule } from '../user/note/user-note-gateway.module';
-import { OauthAppGatewayModule } from '../user/oauth-application/oauth-app-gateway.module';
 import { OauthClientGatewayModule } from '../user/oauth-client/oauth-client-gateway.module';
 import { UserGatewayModule } from '../user/user/user-gateway.module';
 import { OauthGuard } from '../../guards/oauth.guard';
@@ -20,7 +19,6 @@ import { OauthGuard } from '../../guards/oauth.guard';
     SystemSettingsGatewayModule,
     AdminAuthGatewayModule,
     UserNoteGatewayModule,
-    OauthAppGatewayModule,
     OauthClientGatewayModule,
     UserGatewayModule,
   ],

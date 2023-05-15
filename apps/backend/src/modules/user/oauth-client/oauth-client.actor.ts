@@ -5,6 +5,10 @@ import { AppLogger } from './../../../../../shared/src/modules/logging/logger.se
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import { CreateOauthClientDto } from './dto/create-oauth-client.dto';
 import { EditOauthClientDto } from './dto/edit-oauth-client.dto';
+import {
+  OauthClientsListDto,
+  OauthClientsListResponseDto,
+} from './dto/oauth-clients-list.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OauthClientActor extends RequestActor {
@@ -17,6 +21,16 @@ export class OauthClientActor extends RequestActor {
     super();
 
     this.logger = logger.withContext('OauthClientActor');
+  }
+
+  async getOauthClientsList(
+    params: OauthClientsListDto,
+  ): Promise<OauthClientsListResponseDto> {
+    const user = this.loadUserIdentity();
+    return await this.oauthClientService.getUserOauthClientsList(
+      user.id,
+      params,
+    );
   }
 
   async createOauthClient(

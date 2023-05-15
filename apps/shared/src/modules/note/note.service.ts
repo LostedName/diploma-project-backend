@@ -43,6 +43,7 @@ export class NoteService {
       total: total,
     };
   }
+
   async getUserNoteById(userId: number, noteId: number): Promise<NoteEntity> {
     const note = await this.findUserNoteById(userId, noteId);
     if (!note) {

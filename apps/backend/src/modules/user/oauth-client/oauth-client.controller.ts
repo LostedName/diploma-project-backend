@@ -1,3 +1,5 @@
+import { SortQueryExpression } from './../../../../../shared/src/utils/query-expression/expressions/sort-expression';
+import { PaginationExpression } from './../../../../../shared/src/utils/query-expression/expressions/pagination-expression';
 import { OauthClientEntity } from '../../../../../shared/src/modules/database/entities/oauth-client.entity';
 import { AccountRole } from '../../../../../shared/src/modules/database/entities/account.entity';
 import { RoleGuard, Roles } from '../../../guards/role.guard';
@@ -9,12 +11,14 @@ import {
   Patch,
   Delete,
   Param,
+  Query,
   Get,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -22,6 +26,10 @@ import { OauthClientActor } from './oauth-client.actor';
 import { CreateOauthClientDto } from './dto/create-oauth-client.dto';
 import { EditOauthClientDto } from './dto/edit-oauth-client.dto';
 import { GetOauthClientParamsDto } from './dto/get-oauth-client.dto';
+import {
+  OauthClientsListDto,
+  OauthClientsListResponseDto,
+} from './dto/oauth-clients-list.dto';
 
 @ApiTags('Oauth client CRUD')
 @ApiBearerAuth()
@@ -30,6 +38,54 @@ import { GetOauthClientParamsDto } from './dto/get-oauth-client.dto';
 @UseGuards(RoleGuard)
 export class OauthClientController {
   constructor(private readonly actor: OauthClientActor) {}
+
+  @ApiOperation({ summary: 'Return clients entities list with pagination' })
+  @ApiQuery({
+    name: 'pagination__page',
+    type: Number,
+    required: false,
+    description: 'Pagination page number. Starts from 1.',
+  })
+  @ApiQuery({
+    name: 'pagination__pageSize',
+    enum: PaginationExpression.supportedLimits,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'createdAtBetween__to',
+    type: Date,
+    required: false,
+    description: 'End date',
+  })
+  @ApiQuery({
+    name: 'createdAtBetween__from',
+    type: Date,
+    required: false,
+    description: 'Start date',
+  })
+  @ApiQuery({
+    name: 'id__eq',
+    type: Number,
+    required: false,
+    description: 'Id filter.',
+  })
+  @ApiQuery({
+    name: 'createdAtSort__order',
+    enum: SortQueryExpression.supportedSortOrders,
+    required: false,
+    description: 'Order by created_at.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: OauthClientsListResponseDto,
+    description: 'Returns list of notes',
+  })
+  @Get('/list')
+  async getNotesList(
+    @Query() params: OauthClientsListDto,
+  ): Promise<OauthClientsListResponseDto> {
+    return this.actor.getOauthClientsList(params);
+  }
 
   @ApiOperation({ summary: 'Create new user oauth client credentials' })
   @ApiResponse({

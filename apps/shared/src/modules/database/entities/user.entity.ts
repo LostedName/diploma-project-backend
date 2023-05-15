@@ -10,7 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity } from './account.entity';
 import { AppEntity } from './app.entity';
 import { NoteEntity } from './note.entity';
-import { OauthApplicationEntity } from './oauth-application.entity';
+import { OauthClientEntity } from './oauth-client.entity';
 
 export enum UserGender {
   Male,
@@ -61,9 +61,9 @@ export class UserEntity extends AppEntity {
   @JoinColumn({ name: 'user_id' })
   notes: NoteEntity[];
 
-  @OneToMany(() => OauthApplicationEntity, (application) => application.user, {
+  @OneToMany(() => OauthClientEntity, (client) => client.user, {
     cascade: true,
   })
   @JoinColumn({ name: 'user_id' })
-  oauth_applications: OauthApplicationEntity[];
+  oauth_clients: OauthClientEntity[];
 }

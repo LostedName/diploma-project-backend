@@ -27,7 +27,6 @@ export class OauthGuard implements CanActivate {
       SCOPES_KEY,
       [context.getHandler(), context.getClass()],
     );
-    console.log('OAUTH GUARD');
     const scopeGuardExist = !isNil(allowedMethodScopes);
 
     const requestIdentity = extractRequestIdentity(
@@ -52,9 +51,6 @@ export class OauthGuard implements CanActivate {
 
       const allowedTokenScopes = oauthClaims.getScopes();
       let accessAllowed = false || allowedMethodScopes.length === 0;
-
-      console.log('Allowed method scopes: ', allowedMethodScopes);
-      console.log('Allowed token scopes: ', allowedTokenScopes);
 
       allowedMethodScopes.forEach((methodScope) => {
         accessAllowed =

@@ -2,18 +2,12 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsNotEmpty,
-  IsNotEmptyObject,
-  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
 } from 'class-validator';
 
 export class CreateOauthClientDto {
-  @IsNumber()
-  @IsNotEmpty()
-  applicationId: number;
-
   @IsString()
   @IsNotEmpty()
   name: string;

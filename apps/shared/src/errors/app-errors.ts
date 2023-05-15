@@ -232,3 +232,18 @@ export class OauthClientNotFound
   static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
+
+export class OauthClientRelationsAreIncorrect
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(
+      100_4002,
+      'Oauth client relations are incorrect, please check user id or other related entities',
+    );
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
+}

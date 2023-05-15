@@ -5,7 +5,6 @@ import { mainDatabaseConnectionConfigFromConfigService } from './main-database-c
 import { AccountEntity } from './entities/account.entity';
 import { AdminEntity } from './entities/admin.entity';
 import { OauthClientEntity } from './entities/oauth-client.entity';
-import { OauthApplicationEntity } from './entities/oauth-application.entity';
 import { NoteEntity } from './entities/note.entity';
 import { PasswordsEntity } from './entities/passwords.entity';
 import { SystemSettingsEntity } from './entities/system-settings.entity';
@@ -33,7 +32,6 @@ export class MainDatabaseModule {
       AccountEntity,
       AdminEntity,
       OauthClientEntity,
-      OauthApplicationEntity,
       NoteEntity,
       PasswordsEntity,
       SystemSettingsEntity,

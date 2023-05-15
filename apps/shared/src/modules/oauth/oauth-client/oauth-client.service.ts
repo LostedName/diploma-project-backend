@@ -1,19 +1,26 @@
+import { DbUtils } from './../../../utils/database/db-utils';
+import {
+  OauthClientsListDto,
+  OauthClientsListResponseDto,
+} from './../../../../../backend/src/modules/user/oauth-client/dto/oauth-clients-list.dto';
 import { EditOauthClientDto } from './../../../../../backend/src/modules/user/oauth-client/dto/edit-oauth-client.dto';
 import {
+  AppError,
+  InternalError,
   OauthClientAlreadyExist,
   OauthClientNotFound,
+  OauthClientRelationsAreIncorrect,
 } from './../../../errors/app-errors';
 import { CreateOauthClientDto } from './../../../../../backend/src/modules/user/oauth-client/dto/create-oauth-client.dto';
 import { merge } from 'lodash';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
-import { OauthAppService } from '../oauth-application/oauth-app.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { OauthClientEntity } from '../../database/entities/oauth-client.entity';
 import { AppLogger } from '../../logging/logger.service';
-import { OauthApplicationEntity } from '../../database/entities/oauth-application.entity';
+import { UserEntity } from '../../database/entities/user.entity';
 
 @Injectable()
 export class OauthClientService {
@@ -22,34 +29,48 @@ export class OauthClientService {
   constructor(
     @InjectRepository(OauthClientEntity)
     private readonly oauthClientRepository: Repository<OauthClientEntity>,
-    private readonly aouthAppService: OauthAppService,
     logger: AppLogger,
   ) {
     this.logger = logger.withContext('OauthClientService');
+  }
+
+  async getUserOauthClientsList(
+    userId: number,
+    params: OauthClientsListDto,
+  ): Promise<OauthClientsListResponseDto> {
+    let queryBuilder = this.oauthClientRepository
+      .createQueryBuilder('oauth_clients')
+      .innerJoin('oauth_clients.user', 'user')
+      .where('user.id = :userId', { userId })
+      .select([
+        'oauth_clients.id',
+        'oauth_clients.name',
+        'oauth_clients.description',
+        'oauth_clients.icon_url',
+        'oauth_clients.created_at',
+      ]);
+
+    queryBuilder = params.filters().apply(queryBuilder);
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+    return {
+      items: items,
+      total: total,
+    };
   }
 
   async createUserOauthClient(
     userId: number,
     createOauthClientDto: CreateOauthClientDto,
   ): Promise<OauthClientEntity> {
-    createOauthClientDto.applicationId;
-    const oauthApp = await this.aouthAppService.getUserOauthAppById(
-      userId,
-      createOauthClientDto.applicationId,
-    );
-    const duplicateClient = oauthApp.oauth_clients.find(
-      (client) => client.name === createOauthClientDto.name,
-    );
-    if (duplicateClient) {
-      throw new OauthClientAlreadyExist(); //add extra with reason
-    }
+    // error
     const clientPublic = this.generateClientPublic();
     const clientSecret = this.generateClientSecret();
     const hashedClientSecret = await this.encryptClientSecret(clientSecret);
     const oauthClient = this.createOauthClient({
       client_public: clientPublic,
       client_secret: hashedClientSecret,
-      oauth_application: <OauthApplicationEntity>{ id: oauthApp.id },
+      user: <UserEntity>{ id: userId },
       name: createOauthClientDto.name,
       description: createOauthClientDto.description || null,
       homepage_url: createOauthClientDto.homepageUrl,
@@ -133,8 +154,7 @@ export class OauthClientService {
   ): Promise<OauthClientEntity | null> {
     return await this.oauthClientRepository
       .createQueryBuilder('oauth_client')
-      .innerJoin('oauth_client.oauth_application', 'oauth_app')
-      .innerJoin('oauth_app.user', 'user')
+      .innerJoin('oauth_client.user', 'user')
       .where('user.id = :userId and oauth_client.id = :clientId', {
         userId,
         clientId,
@@ -147,8 +167,7 @@ export class OauthClientService {
   ): Promise<OauthClientEntity | null> {
     return await this.oauthClientRepository
       .createQueryBuilder('oauth_client')
-      .innerJoin('oauth_client.oauth_application', 'oauth_app')
-      .innerJoin('oauth_app.user', 'user')
+      .innerJoin('oauth_client.user', 'user')
       .where('user.id = :userId and oauth_client.id = :clientId', {
         userId,
         clientId,
@@ -161,8 +180,15 @@ export class OauthClientService {
     return this.oauthClientRepository.create(oauthClient);
   }
 
-  private saveOauthClient(oauthClient: OauthClientEntity) {
-    return this.oauthClientRepository.save(oauthClient);
+  private async saveOauthClient(
+    oauthClient: OauthClientEntity,
+  ): Promise<OauthClientEntity> {
+    try {
+      const clientEntity = await this.oauthClientRepository.save(oauthClient);
+      return clientEntity;
+    } catch (err) {
+      throw this.formatError(err);
+    }
   }
 
   private async deleteOauthClient(clientId: number) {
@@ -189,5 +215,17 @@ export class OauthClientService {
 
   private async encryptClientSecret(clientSecret: string): Promise<string> {
     return bcrypt.hash(clientSecret, await bcrypt.genSalt());
+  }
+
+  private formatError(error: Error): AppError {
+    if (error instanceof AppError) {
+      return error;
+    } else if (DbUtils.isUniqueViolationError(error)) {
+      return new OauthClientAlreadyExist();
+    } else if (DbUtils.isRelationConstraintError(error)) {
+      return new OauthClientRelationsAreIncorrect();
+    }
+
+    return new InternalError();
   }
 }
