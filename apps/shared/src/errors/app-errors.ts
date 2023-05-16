@@ -247,3 +247,29 @@ export class OauthClientRelationsAreIncorrect
   static httpStatus: number = HttpStatus.BAD_REQUEST;
   httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
 }
+
+//configurations\connections
+
+export class RedisConfigurationError
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_5000, 'Redis error: host/port/password not defined in config!');
+  }
+
+  static httpStatus: number = HttpStatus.INTERNAL_SERVER_ERROR;
+  httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
+}
+
+export class RedisConnectionError
+  extends AppError
+  implements HttpErrorRepresentable
+{
+  constructor() {
+    super(100_5001, 'Unable to connect to redis');
+  }
+
+  static httpStatus: number = HttpStatus.INTERNAL_SERVER_ERROR;
+  httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
+}
