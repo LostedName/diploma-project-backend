@@ -9,6 +9,8 @@ import { NoteEntity } from './entities/note.entity';
 import { PasswordsEntity } from './entities/passwords.entity';
 import { SystemSettingsEntity } from './entities/system-settings.entity';
 import { UserEntity } from './entities/user.entity';
+import { AuthenticationCodeEntity } from './entities/authentication-code.entity';
+import { CredentialEntity } from './entities/credential.entity';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ export class MainDatabaseModule {
   static get entities() {
     return TypeOrmModule.forFeature([
       AccountEntity,
+      AuthenticationCodeEntity,
+      CredentialEntity,
       AdminEntity,
       OauthClientEntity,
       NoteEntity,
