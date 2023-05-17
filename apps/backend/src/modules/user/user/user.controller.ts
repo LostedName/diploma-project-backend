@@ -5,11 +5,12 @@ import {
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import { AccountRole } from './../../../../../shared/src/modules/database/entities/account.entity';
 import { RoleGuard, Roles } from './../../../guards/role.guard';
-import { Controller, UseGuards, Get, Patch, Body } from '@nestjs/common';
+import { Controller, UseGuards, Get, Patch, Body, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiProperty,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -18,6 +19,19 @@ import { UpdateUserProfileDto } from './dto/update-user.dto';
 import { Scopes } from 'apps/backend/src/guards/oauth.guard';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
+class QueryParams {
+  @ApiProperty()
+  key: string;
+}
+
+class SetQueryParams {
+  @ApiProperty()
+  key: string;
+
+  @ApiProperty()
+  value: string;
+}
+
 @ApiTags('User CRUD')
 @ApiBearerAuth()
 @Controller('api/user')
@@ -25,6 +39,16 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 @UseGuards(RoleGuard)
 export class UserController {
   constructor(private readonly actor: UserActor) {}
+
+  @Get('test-get')
+  async testGet(@Query() params: QueryParams) {
+    return await this.actor.getKey(params.key);
+  }
+
+  @Get('test-set')
+  async testSet(@Query() params: SetQueryParams) {
+    return await this.actor.setKey(params.key, params.value);
+  }
 
   @ApiOperation({ summary: 'Get user profile info' })
   @ApiResponse({

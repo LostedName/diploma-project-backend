@@ -74,6 +74,7 @@ export class AuthenticationService {
       account = await this.accountRepository.save(account);
       await authenticator.bind(account);
     } catch (err) {
+      console.log(err);
       if (DbUtils.isUniqueViolationError(err)) {
         throw new AccountAlreadyExists();
       } else {

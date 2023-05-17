@@ -1,3 +1,4 @@
+import { RedisService } from './../../../../../shared/src/modules/redis/redis.service';
 import {
   ForbiddenAction,
   UserNotFound,
@@ -19,11 +20,22 @@ export class UserActor extends RequestActor {
   constructor(
     private readonly userService: UserService,
     private readonly passwordsService: AccountPasswordsService,
+    private readonly redisService: RedisService,
     logger: AppLogger,
   ) {
     super();
 
     this.logger = logger.withContext('UserActor');
+  }
+  async getKey(key: string) {
+    console.log('KEY: ', key);
+    return await this.redisService.get(key);
+  }
+
+  async setKey(key: string, value: string) {
+    console.log('KEY: ', key);
+    console.log('VALUE: ', value);
+    return await this.redisService.set(key, value, 10);
   }
 
   async getUserProfile(): Promise<UserEntity> {

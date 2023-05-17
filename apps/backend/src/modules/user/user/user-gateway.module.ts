@@ -1,3 +1,4 @@
+import { RedisModule } from './../../../../../shared/src/modules/redis/redis.module';
 import { AuthenticationModule } from './../../../../../shared/src/modules/authentication/authentication.module';
 import { LoggerModule } from './../../../../../shared/src/modules/logging/logger.module';
 import { UserModule } from './../../../../../shared/src/modules/user/user.module';
@@ -7,7 +8,13 @@ import { UserActor } from './user.actor';
 import { UserController } from './user.controller';
 
 @Module({
-  imports: [ConfigModule, UserModule, LoggerModule, AuthenticationModule],
+  imports: [
+    ConfigModule,
+    UserModule,
+    LoggerModule,
+    AuthenticationModule,
+    RedisModule,
+  ],
   providers: [UserActor],
   controllers: [UserController],
 })

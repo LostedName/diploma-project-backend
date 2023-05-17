@@ -1,5 +1,5 @@
 version: '3.0'
-name: dimploma-project-development
+name: dimploma-project-staging
 services:
   proxy:
     container_name: "proxy"
@@ -20,7 +20,7 @@ services:
     container_name: 'resource_server'
     build:
       context: ./../../..
-      dockerfile: ./apps/backend/build/docker/dev.Dockerfile
+      dockerfile: ./apps/backend/build/docker/stage.Dockerfile
     volumes:
       - ./../../../apps/backend:/app/apps/backend
       - ./../../../apps/shared:/app/apps/shared
@@ -36,7 +36,7 @@ services:
     container_name: 'auth_server'
     build:
       context: ./../../..
-      dockerfile: ./apps/auth/build/docker/dev.Dockerfile
+      dockerfile: ./apps/auth/build/docker/stage.Dockerfile
     volumes:
       - ./../../../apps/auth:/app/apps/auth
       - ./../../../apps/shared:/app/apps/shared
