@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, OneToMany, FindOptionsRelations } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity } from './account.entity';
 import { AppEntity } from './app.entity';
@@ -17,6 +10,8 @@ export enum UserGender {
   Female,
   Other,
 }
+
+export type UserEntityRelations = FindOptionsRelations<UserEntity>;
 
 @Entity({ name: 'users', schema: 'public' })
 export class UserEntity extends AppEntity {
@@ -32,7 +27,7 @@ export class UserEntity extends AppEntity {
     description: 'User account',
     required: true,
   })
-  @OneToOne(() => AccountEntity, { onDelete: 'CASCADE' })
+  @OneToOne(() => AccountEntity, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn()
   account: AccountEntity;
 

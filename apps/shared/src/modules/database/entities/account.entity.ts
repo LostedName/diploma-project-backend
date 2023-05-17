@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
+import { AuthenticationCodeEntity } from './authentication-code.entity';
+import { CredentialEntity } from './credential.entity';
 
 export enum AccountRole {
   User = 1,
@@ -39,7 +41,7 @@ export class AccountEntity extends AppEntity {
     description: 'Role of account',
     required: true,
   })
-  @Column()
+  @Column({ default: AccountRole.User })
   role: AccountRole;
 
   @ApiProperty({
@@ -47,7 +49,7 @@ export class AccountEntity extends AppEntity {
     description: 'If account is verified',
     required: true,
   })
-  @Column()
+  @Column({ default: false })
   verified: boolean;
 
   @ApiProperty({
@@ -55,7 +57,7 @@ export class AccountEntity extends AppEntity {
     description: 'Authorisation method',
     required: true,
   })
-  @Column()
+  @Column({ default: AuthenticationMethod.Password })
   authentication_method: AuthenticationMethod;
 
   @ApiProperty({
@@ -65,13 +67,19 @@ export class AccountEntity extends AppEntity {
   @Column({ default: AccountStatus.Enabled })
   status: AccountStatus;
 
-  hasAuthenticationMethod(
-    authentication_method: AuthenticationMethod,
-  ): boolean {
+  hasAuthenticationMethod(authentication_method: AuthenticationMethod): boolean {
     return this.authentication_method === authentication_method;
   }
 
   hasRole(role: AccountRole): boolean {
     return this.role === role;
   }
+
+  @OneToOne(() => AuthenticationCodeEntity, { cascade: true })
+  @JoinColumn()
+  authenticationCode: AuthenticationCodeEntity;
+
+  @OneToOne(() => CredentialEntity, { cascade: true, onDelete: 'CASCADE' })
+  @JoinColumn()
+  credential: CredentialEntity;
 }

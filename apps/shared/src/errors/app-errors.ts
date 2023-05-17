@@ -13,11 +13,7 @@ export class AppError extends Error {
 }
 
 export class ErrorReason {
-  constructor(
-    readonly code: number,
-    readonly description: string,
-    readonly extra: any | null = null,
-  ) {}
+  constructor(readonly code: number, readonly description: string, readonly extra: any | null = null) {}
 
   static badField(field: string, description: string): ErrorReason {
     return new ErrorReason(1, description, { field: field });
@@ -45,10 +41,7 @@ export class InternalError extends AppError implements HttpErrorRepresentable {
   httpStatus: number = InternalError.httpStatus;
 }
 
-export class ValidationError
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class ValidationError extends AppError implements HttpErrorRepresentable {
   constructor(reasons: ErrorReason[]) {
     super(100_0001, 'Validation error', null, reasons);
   }
@@ -59,10 +52,7 @@ export class ValidationError
 
 // Authentication/Authorisation
 
-export class CredentialsAreIncorrect
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class CredentialsAreIncorrect extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1000, 'Credentials are incorrect');
   }
@@ -71,10 +61,7 @@ export class CredentialsAreIncorrect
   httpStatus: number = CredentialsAreIncorrect.httpStatus;
 }
 
-export class AccountAlreadyExists
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class AccountAlreadyExists extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1001, 'Account already exists');
   }
@@ -92,10 +79,7 @@ export class BadToken extends AppError implements HttpErrorRepresentable {
   httpStatus: number = BadToken.httpStatus;
 }
 
-export class UnauthorisedAction
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class UnauthorisedAction extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1003, 'Unauthorised action');
   }
@@ -104,10 +88,7 @@ export class UnauthorisedAction
   httpStatus: number = UnauthorisedAction.httpStatus;
 }
 
-export class ForbiddenAction
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class ForbiddenAction extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1004, 'Forbidden action');
   }
@@ -116,10 +97,7 @@ export class ForbiddenAction
   httpStatus: number = ForbiddenAction.httpStatus;
 }
 
-export class AccountNotFound
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class AccountNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1005, 'Account not found');
   }
@@ -146,10 +124,7 @@ export class AdminNotFound extends AppError implements HttpErrorRepresentable {
   httpStatus: number = AdminNotFound.httpStatus;
 }
 
-export class UserAlreadyVerified
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class UserAlreadyVerified extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1008, 'User already verified');
   }
@@ -158,15 +133,75 @@ export class UserAlreadyVerified
   httpStatus: number = UserAlreadyVerified.httpStatus;
 }
 
-export class SystemSettingsNotFound
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class SystemSettingsNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_1009, 'Settings not found');
   }
 
   static httpStatus: number = HttpStatus.NOT_FOUND;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class CanNotVerifyToken extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1010, 'Can not verify token');
+  }
+
+  static httpStatus: number = HttpStatus.FORBIDDEN;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class TokenInvalidOrExpired extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1011, 'Token invalid or expired');
+  }
+
+  static httpStatus: number = HttpStatus.FORBIDDEN;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class UserNotVerified extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1012, 'User not verified');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class AuthCodeInvalidOrExpired extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1013, 'Auth code invalid or expired');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class UserAlreadyExists extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1014, 'User already exists');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class EmailIsNotRegistered extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1015, 'Email is not refistered');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class PasswordsDoNotMatch extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_1016, 'Passwords do not match');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 
@@ -183,10 +218,7 @@ export class NoteNotFound extends AppError implements HttpErrorRepresentable {
 
 //Oauth app
 
-export class OauthAppNotFound
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class OauthAppNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_3001, 'Oauth application not found');
   }
@@ -195,10 +227,7 @@ export class OauthAppNotFound
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 
-export class OauthAppAlreadyExist
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class OauthAppAlreadyExist extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_3002, 'Oauth application already exist');
   }
@@ -209,10 +238,7 @@ export class OauthAppAlreadyExist
 
 //Oauth client
 
-export class OauthClientAlreadyExist
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class OauthClientAlreadyExist extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_4000, 'Oauth client already exist');
   }
@@ -221,10 +247,7 @@ export class OauthClientAlreadyExist
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 
-export class OauthClientNotFound
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class OauthClientNotFound extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_4001, 'Oauth client not found');
   }
