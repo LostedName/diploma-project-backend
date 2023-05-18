@@ -1,3 +1,4 @@
+import { OauthClientModule } from './../../../../../shared/src/modules/oauth/oauth-client/oauth-client.module';
 import { LoggerModule } from './../../../../../shared/src/modules/logging/logger.module';
 import { LinksModule } from './../../../../../shared/src/modules/links/links.module';
 import { UserModule } from './../../../../../shared/src/modules/user/user.module';
@@ -16,6 +17,7 @@ import { OAuthController } from './oauth.controller';
     ConfigModule,
     LinksModule,
     LoggerModule,
+    OauthClientModule,
   ],
   providers: [OAuthActor],
   controllers: [OAuthController],

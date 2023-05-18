@@ -1,11 +1,6 @@
 import { OAuthScope } from './../../../shared/src/modules/oauth/scopes/scope-definition';
 import { ForbiddenAction } from './../../../shared/src/errors/app-errors';
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  SetMetadata,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { extractRequestIdentity } from '../modules/request-identity/identity-extractor.middleware';
 import { isNil } from 'lodash';
@@ -23,24 +18,20 @@ export class OauthGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const allowedMethodScopes = this.reflector.getAllAndOverride<string[]>(
-      SCOPES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const allowedMethodScopes = this.reflector.getAllAndOverride<string[]>(SCOPES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     const scopeGuardExist = !isNil(allowedMethodScopes);
 
-    const requestIdentity = extractRequestIdentity(
-      context.switchToHttp().getRequest(),
-    );
+    const requestIdentity = extractRequestIdentity(context.switchToHttp().getRequest());
 
     if (isNil(requestIdentity?.authorisation)) {
       //No authorization at all
       return true;
     }
 
-    const oauthClaims = await requestIdentity.authorisation.getClaim(
-      OAuthClaims,
-    );
+    const oauthClaims = await requestIdentity.authorisation.getClaim(OAuthClaims);
 
     if (!isNil(oauthClaims)) {
       // OAuth token
@@ -53,8 +44,7 @@ export class OauthGuard implements CanActivate {
       let accessAllowed = false || allowedMethodScopes.length === 0;
 
       allowedMethodScopes.forEach((methodScope) => {
-        accessAllowed =
-          allowedTokenScopes.includes(methodScope) || accessAllowed;
+        accessAllowed = allowedTokenScopes.includes(methodScope) || accessAllowed;
       });
       if (!accessAllowed) {
         console.log('Token allowed scopes unsuitable for this method');

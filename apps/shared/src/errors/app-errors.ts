@@ -256,27 +256,36 @@ export class OauthClientNotFound extends AppError implements HttpErrorRepresenta
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 
-export class OauthClientRelationsAreIncorrect
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class OauthClientRelationsAreIncorrect extends AppError implements HttpErrorRepresentable {
   constructor() {
-    super(
-      100_4002,
-      'Oauth client relations are incorrect, please check user id or other related entities',
-    );
+    super(100_4002, 'Oauth client relations are incorrect, please check user id or other related entities');
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
   httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
 }
 
+export class RedirectUrlMismatch extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_4003, 'Oauth client does not contain such redirect url');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class OAuthInvalidScope extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_4004, 'Invalid scope provided');
+  }
+
+  static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
 //configurations\connections
 
-export class RedisConfigurationError
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class RedisConfigurationError extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_5000, 'Redis error: host/port/password not defined in config!');
   }
@@ -285,10 +294,7 @@ export class RedisConfigurationError
   httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
 }
 
-export class RedisConnectionError
-  extends AppError
-  implements HttpErrorRepresentable
-{
+export class RedisConnectionError extends AppError implements HttpErrorRepresentable {
   constructor() {
     super(100_5001, 'Unable to connect to redis');
   }

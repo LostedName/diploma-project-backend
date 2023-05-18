@@ -1,33 +1,13 @@
-import {
-  noteReadScope,
-  noteScope,
-} from './../../../../../shared/src/modules/oauth/scopes/scopes';
+import { noteReadScope, noteScope } from './../../../../../shared/src/modules/oauth/scopes/scopes';
 import { Scopes } from './../../../guards/oauth.guard';
 import { SortQueryExpression } from './../../../../../shared/src/utils/query-expression/expressions/sort-expression';
 import { PaginationExpression } from './../../../../../shared/src/utils/query-expression/expressions/pagination-expression';
 import { NoteEntity } from './../../../../../shared/src/modules/database/entities/note.entity';
 import { RoleGuard } from './../../../guards/role.guard';
 import { AccountRole } from './../../../../../shared/src/modules/database/entities/account.entity';
-import {
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  UseGuards,
-  Post,
-  Body,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Patch, UseGuards, Post, Body, Param, Query } from '@nestjs/common';
 import { UserNoteActor } from './user-note.actor';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'apps/backend/src/guards/role.guard';
 import { NotesListDto, NotesListResponseDto } from './dto/notes-list.dto';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -86,9 +66,7 @@ export class UserNoteController {
   })
   @Scopes(noteScope, noteReadScope)
   @Get('/list')
-  async getNotesList(
-    @Query() params: NotesListDto,
-  ): Promise<NotesListResponseDto> {
+  async getNotesList(@Query() params: NotesListDto): Promise<NotesListResponseDto> {
     return this.actor.getNotesList(params);
   }
 
@@ -136,10 +114,7 @@ export class UserNoteController {
   })
   @Scopes(noteScope)
   @Patch('/:id')
-  async editNote(
-    @Param('id') noteId: number,
-    @Body() editNoteDto: EditNoteDto,
-  ): Promise<NoteEntity> {
+  async editNote(@Param('id') noteId: number, @Body() editNoteDto: EditNoteDto): Promise<NoteEntity> {
     return this.actor.editNote(noteId, editNoteDto);
   }
 

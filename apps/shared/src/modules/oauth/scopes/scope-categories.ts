@@ -24,3 +24,9 @@ export const oidcScopeCategory = OAuthScopeCategory.describe({
   identifier: OIDCCategoryIdentifier,
   title: 'OpenID Connect',
 });
+
+export const totalScopeCategories = [noteScopeCategory, userScopeCategory, oidcScopeCategory];
+
+export function findScopeCategoryById(categoryId: string) {
+  return totalScopeCategories.find((category) => category.identifier === categoryId);
+}

@@ -34,10 +34,7 @@ export class OauthClientService {
     this.logger = logger.withContext('OauthClientService');
   }
 
-  async getUserOauthClientsList(
-    userId: number,
-    params: OauthClientsListDto,
-  ): Promise<OauthClientsListResponseDto> {
+  async getUserOauthClientsList(userId: number, params: OauthClientsListDto): Promise<OauthClientsListResponseDto> {
     let queryBuilder = this.oauthClientRepository
       .createQueryBuilder('oauth_clients')
       .innerJoin('oauth_clients.user', 'user')
@@ -59,10 +56,7 @@ export class OauthClientService {
     };
   }
 
-  async createUserOauthClient(
-    userId: number,
-    createOauthClientDto: CreateOauthClientDto,
-  ): Promise<OauthClientEntity> {
+  async createUserOauthClient(userId: number, createOauthClientDto: CreateOauthClientDto): Promise<OauthClientEntity> {
     // error
     const clientPublic = this.generateClientPublic();
     const clientSecret = this.generateClientSecret();
@@ -81,10 +75,7 @@ export class OauthClientService {
     return savedOauthClient;
   }
 
-  async getUserOauthClientById(
-    userId: number,
-    clientId: number,
-  ): Promise<OauthClientEntity> {
+  async getUserOauthClientById(userId: number, clientId: number): Promise<OauthClientEntity> {
     const oauthClient = await this.findUserOauthClientById(userId, clientId);
     if (!oauthClient) {
       throw new OauthClientNotFound();
@@ -92,14 +83,8 @@ export class OauthClientService {
     return oauthClient;
   }
 
-  async deleteUserOauthClient(
-    userId: number,
-    clientId: number,
-  ): Promise<OauthClientEntity> {
-    const oauthClientEntity = await this.findUserOauthClientById(
-      userId,
-      clientId,
-    );
+  async deleteUserOauthClient(userId: number, clientId: number): Promise<OauthClientEntity> {
+    const oauthClientEntity = await this.findUserOauthClientById(userId, clientId);
     if (!oauthClientEntity) {
       throw new OauthClientNotFound();
     }
@@ -112,10 +97,7 @@ export class OauthClientService {
     clientId: number,
     editOauthClientDto: EditOauthClientDto,
   ): Promise<OauthClientEntity> {
-    const oauthClientEntity = await this.findUserOauthClientById(
-      userId,
-      clientId,
-    );
+    const oauthClientEntity = await this.findUserOauthClientById(userId, clientId);
     if (!oauthClientEntity) {
       throw new OauthClientNotFound();
     }
@@ -148,10 +130,7 @@ export class OauthClientService {
     return savedOauthClient;
   }
 
-  async findUserOauthClientById(
-    userId: number,
-    clientId: number,
-  ): Promise<OauthClientEntity | null> {
+  async findUserOauthClientById(userId: number, clientId: number): Promise<OauthClientEntity | null> {
     return await this.oauthClientRepository
       .createQueryBuilder('oauth_client')
       .innerJoin('oauth_client.user', 'user')
@@ -161,16 +140,12 @@ export class OauthClientService {
       })
       .getOne();
   }
-  async findUserOauthClientByIdWithSecret(
-    userId: number,
-    clientId: number,
-  ): Promise<OauthClientEntity | null> {
+
+  async findUserOauthClientByClientPublic(clientPublic: string): Promise<OauthClientEntity | null> {
     return await this.oauthClientRepository
       .createQueryBuilder('oauth_client')
-      .innerJoin('oauth_client.user', 'user')
-      .where('user.id = :userId and oauth_client.id = :clientId', {
-        userId,
-        clientId,
+      .where('oauth_client.client_public = :clientPublic', {
+        clientPublic,
       })
       .addSelect(['oauth_client.client_secret'])
       .getOne();
@@ -180,9 +155,7 @@ export class OauthClientService {
     return this.oauthClientRepository.create(oauthClient);
   }
 
-  private async saveOauthClient(
-    oauthClient: OauthClientEntity,
-  ): Promise<OauthClientEntity> {
+  private async saveOauthClient(oauthClient: OauthClientEntity): Promise<OauthClientEntity> {
     try {
       const clientEntity = await this.oauthClientRepository.save(oauthClient);
       return clientEntity;
@@ -206,10 +179,7 @@ export class OauthClientService {
     return crypto.randomBytes(size).toString('hex');
   }
 
-  private async matchClientSecrets(
-    clientSecret: string,
-    hashedClientSecret: string,
-  ): Promise<boolean> {
+  private async matchClientSecrets(clientSecret: string, hashedClientSecret: string): Promise<boolean> {
     return bcrypt.compare(clientSecret, hashedClientSecret);
   }
 

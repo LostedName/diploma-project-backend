@@ -1,11 +1,4 @@
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateOauthClientDto {
   @IsString()

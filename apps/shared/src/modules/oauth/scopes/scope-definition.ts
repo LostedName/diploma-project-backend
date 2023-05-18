@@ -8,10 +8,7 @@ export class OAuthScopeCategory {
     this.identifier = identifier;
     this.title = title;
   }
-  static describe(params: {
-    identifier: OAuthScopeCategoryIdentifier;
-    title: string;
-  }): OAuthScopeCategory {
+  static describe(params: { identifier: OAuthScopeCategoryIdentifier; title: string }): OAuthScopeCategory {
     return new OAuthScopeCategory(params.identifier, params.title);
   }
 }
