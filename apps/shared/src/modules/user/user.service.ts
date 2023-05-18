@@ -137,18 +137,15 @@ export class UserService {
     return this.save(newUser);
   }
 
-  async findUserByEmailIfExist(
-    email: string,
-    relations: UserEntityRelations,
-    checkIfExists: boolean,
-  ): Promise<UserEntity> {
-    const candidate = await this.userRepository.findOne({
-      relations: relations,
-      where: { account: { email } },
-    });
+  async findUserByEmailIfExist(email: string, checkIfExists: boolean): Promise<UserEntity> {
+    const candidate = await this.userRepository
+      .createQueryBuilder('user')
+      .innerJoinAndSelect('user.account', 'account')
+      .where('account.email = :email', { email })
+      .getOne();
 
     if (checkIfExists && !candidate) throw new UserNotFound();
-
+    console.log('CANDIDATE', candidate);
     return candidate;
   }
 

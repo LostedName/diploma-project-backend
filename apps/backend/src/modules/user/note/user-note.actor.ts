@@ -31,10 +31,7 @@ export class UserNoteActor extends RequestActor {
     return await this.noteService.createUserNote(user.id, createNoteDto);
   }
 
-  async editNote(
-    noteId: number,
-    editNoteDto: EditNoteDto,
-  ): Promise<NoteEntity> {
+  async editNote(noteId: number, editNoteDto: EditNoteDto): Promise<NoteEntity> {
     const user = this.loadUserIdentity();
     return await this.noteService.editUserNote(user.id, noteId, editNoteDto);
   }

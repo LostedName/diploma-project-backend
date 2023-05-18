@@ -1,3 +1,4 @@
+import { AuthorisationService } from './../../../../../shared/src/modules/authorisation/authorisation.service';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserAuthenticationDto } from './dtos/user-authentication-dto';
@@ -23,12 +24,15 @@ import { TokenType } from 'apps/auth/src/common/guards/jwt-auth.guard';
 import { UserEntityRelations } from 'apps/shared/src/modules/database/entities/user.entity';
 import { AccountRole } from 'apps/shared/src/modules/database/entities/account.entity';
 
+//Rewrite full module to Authorization and claim tokens
+
 @Injectable()
 export class UserAuthActor {
   constructor(
     private readonly userService: UserService,
     private readonly mailingService: MailingService,
     private readonly authService: AuthService,
+    private readonly authorisationService: AuthorisationService,
   ) {}
 
   async authentication(body: UserAuthenticationDto): Promise<AuthenticationResponseDto> {
@@ -63,8 +67,8 @@ export class UserAuthActor {
 
     await this.authService.deleteUserAuthCode(user);
 
-    const payload = this.authService.generateTokenPayload(user.id, undefined, TokenType.Access);
-    const token = await this.authService.generateIntermediateToken(payload);
+    const authorisation = await this.authorisationService.authoriseUserAccess(user.account);
+    const token = await this.authorisationService.encodeAuthorisation(authorisation);
 
     return { token };
   }
@@ -72,7 +76,7 @@ export class UserAuthActor {
   async registration(body: RegistrationDto): Promise<string> {
     const { email, password, first_name, last_name, avatar_url } = body;
 
-    const candidate = await this.userService.findUserByEmailIfExist(email, <UserEntityRelations>[], false);
+    const candidate = await this.userService.findUserByEmailIfExist(email, false);
 
     if (candidate) throw new UserAlreadyExists();
 
@@ -109,7 +113,7 @@ export class UserAuthActor {
 
     await this.userService.save(user);
 
-    const payload = this.authService.generateTokenPayload(user.id, undefined, TokenType.Access);
+    const payload = this.authService.generateTokenPayload(user.id, AccountRole.User, TokenType.Access);
     const token = await this.authService.generateIntermediateToken(payload);
 
     return { token };
@@ -126,7 +130,7 @@ export class UserAuthActor {
   }
 
   async resendConfirmationCode(email: string): Promise<string> {
-    const user = await this.userService.findUserByEmailIfExist(email, <UserEntityRelations>[], true);
+    const user = await this.userService.findUserByEmailIfExist(email, true);
 
     if (user.account.verified) throw new UserAlreadyVerified();
 
@@ -165,7 +169,7 @@ export class UserAuthActor {
 
     if (password !== repeatPassword) throw new PasswordsDoNotMatch();
 
-    if (user.account.credential.changePasswordToken !== token) throw new TokenInvalidOrExpired();
+    if (user.account.credential.changePasswordToken !== token) throw new TokenInvalidOrExpired(); //Weird staff
 
     user.account.credential.password = await bcrypt.hash(body.password, await bcrypt.genSalt());
 

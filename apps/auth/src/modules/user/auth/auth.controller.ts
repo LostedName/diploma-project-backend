@@ -19,6 +19,36 @@ import { AuthContent } from 'apps/shared/src/modules/auth/auth.service';
 export class UserAuthController {
   constructor(private readonly actor: UserAuthActor) {}
 
+  @ApiOperation({ summary: 'User registration' })
+  @ApiResponse({ status: 201, description: 'New user created' })
+  @ApiResponse({ status: 400, description: 'User already exist' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Post('registration')
+  registration(@Body() body: RegistrationDto): Promise<string> {
+    return this.actor.registration(body);
+  }
+
+  @ApiOperation({ summary: 'Resend confirmation code' })
+  @ApiResponse({ status: 200, description: 'Confirmation code successfully resended' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @Post('resend/confirmation')
+  resendConfirmationCode(@Body() body: SendConfirmationCodeDto): Promise<string> {
+    return this.actor.resendConfirmationCode(body.email);
+  }
+
+  @ApiOperation({ summary: 'User confirmation' })
+  @ApiResponse({ status: 201, description: 'User email confirmed' })
+  @ApiResponse({ status: 400, description: 'Passwords do not match' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 500, description: 'Server error' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('confirm-registration')
+  confirmRegistration(@AuthData() authData: AuthContent): Promise<ConfirmRegistrationResponseDto> {
+    return this.actor.confirmRegistration(authData);
+  }
+
   @ApiOperation({ summary: 'User authentication' })
   @ApiResponse({ status: 201, description: 'Authentificate user and returns user id', type: AuthenticationResponseDto })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -47,15 +77,6 @@ export class UserAuthController {
     return this.actor.twoFactorAuthConfirmation(body, authData);
   }
 
-  @ApiOperation({ summary: 'User registration' })
-  @ApiResponse({ status: 201, description: 'New user created' })
-  @ApiResponse({ status: 400, description: 'User already exist' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @Post('registration')
-  registration(@Body() body: RegistrationDto): Promise<string> {
-    return this.actor.registration(body);
-  }
-
   @ApiOperation({ summary: 'Resend auth code' })
   @ApiResponse({ status: 200, description: 'Auth code successfully resended' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -65,15 +86,6 @@ export class UserAuthController {
   @Get('resend/auth')
   resendAuthCode(@AuthData() authData: AuthContent): Promise<string> {
     return this.actor.resendAuthCode(authData.userId);
-  }
-
-  @ApiOperation({ summary: 'Resend confirmation code' })
-  @ApiResponse({ status: 200, description: 'Confirmation code successfully resended' })
-  @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @Post('resend/confirmation')
-  resendConfirmationCode(@Body() body: SendConfirmationCodeDto): Promise<string> {
-    return this.actor.resendConfirmationCode(body.email);
   }
 
   @ApiOperation({ summary: 'Send link to reset user password' })
@@ -94,17 +106,6 @@ export class UserAuthController {
     return this.actor.sendChangePasswordLink(body.email);
   }
 
-  @ApiOperation({ summary: 'Verify password token' })
-  @ApiResponse({ status: 200, description: 'Ok' })
-  @ApiResponse({ status: 403, description: 'Token invalid or expired' })
-  @ApiResponse({ status: 500, description: 'Server error' })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('verify-password-token')
-  verifyPasswordToken(): string {
-    return 'Ok!';
-  }
-
   @ApiOperation({ summary: 'Reset user password' })
   @ApiResponse({ status: 200, description: 'Password successfully reseted' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -116,15 +117,14 @@ export class UserAuthController {
     return this.actor.resetPassword(body, authData);
   }
 
-  @ApiOperation({ summary: 'User confirmation' })
-  @ApiResponse({ status: 201, description: 'User email confirmed' })
-  @ApiResponse({ status: 400, description: 'Passwords do not match' })
-  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiOperation({ summary: 'Verify password token' })
+  @ApiResponse({ status: 200, description: 'Ok' })
+  @ApiResponse({ status: 403, description: 'Token invalid or expired' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get('confirm-registration')
-  confirmRegistration(@AuthData() authData: AuthContent): Promise<ConfirmRegistrationResponseDto> {
-    return this.actor.confirmRegistration(authData);
+  @Get('verify-password-token')
+  verifyPasswordToken(): string {
+    return 'Ok!';
   }
 }
