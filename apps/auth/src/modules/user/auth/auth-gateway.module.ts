@@ -1,3 +1,4 @@
+import { AuthenticationModule } from './../../../../../shared/src/modules/authentication/authentication.module';
 import { AuthorisationModule } from './../../../../../shared/src/modules/authorisation/authorisation.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -9,7 +10,15 @@ import { MailModule } from 'apps/shared/src/modules/mail/mail.module';
 import { AuthModule } from 'apps/shared/src/modules/auth/auth.module';
 
 @Module({
-  imports: [MainDatabaseModule.entities, ConfigModule, UserModule, MailModule, AuthModule, AuthorisationModule],
+  imports: [
+    MainDatabaseModule.entities,
+    ConfigModule,
+    UserModule,
+    MailModule,
+    AuthModule,
+    AuthorisationModule,
+    AuthenticationModule,
+  ],
   providers: [UserAuthActor],
   controllers: [UserAuthController],
 })

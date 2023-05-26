@@ -14,7 +14,7 @@ export type CreateUserType = {
   first_name: string;
   last_name: string;
   email: string;
-  password: string;
+  hashedPassword: string;
   role: AccountRole;
 };
 
@@ -103,25 +103,17 @@ export class UserService {
     return this.authenticationCodeRepository.remove(authCodes);
   }
 
-  async checkIfPasswordsMatch(password: string, hash: string): Promise<void> {
-    const isMatch = await bcrypt.compare(password, hash);
-
-    if (!isMatch) throw new UserNotFound();
-
-    return;
-  }
-
   async updateUserTokenForPasswordChanging(user: UserEntity, changePasswordToken: string | null): Promise<UserEntity> {
-    user.account.credential.changePasswordToken = changePasswordToken;
+    user.account.credential.change_password_token = changePasswordToken;
 
     return this.save(user);
   }
 
   async createEntity(payload: CreateUserType): Promise<UserEntity> {
-    const { avatar_url, first_name, last_name, email, password, role } = payload;
+    const { avatar_url, first_name, last_name, email, hashedPassword, role } = payload;
 
     const creds = new CredentialEntity();
-    creds.password = password !== null ? await bcrypt.hash(password, await bcrypt.genSalt()) : null;
+    creds.password = hashedPassword !== null ? hashedPassword : null;
 
     const account = new AccountEntity();
     account.email = email;

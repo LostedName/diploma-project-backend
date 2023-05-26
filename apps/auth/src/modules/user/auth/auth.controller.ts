@@ -117,14 +117,14 @@ export class UserAuthController {
     return this.actor.resetPassword(body, authData);
   }
 
-  @ApiOperation({ summary: 'Verify password token' })
+  @ApiOperation({ summary: 'Verify token' })
   @ApiResponse({ status: 200, description: 'Ok' })
   @ApiResponse({ status: 403, description: 'Token invalid or expired' })
   @ApiResponse({ status: 500, description: 'Server error' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get('verify-password-token')
-  verifyPasswordToken(): string {
+  @Get('verify-token')
+  verifyToken(): string {
     return 'Ok!';
   }
 }

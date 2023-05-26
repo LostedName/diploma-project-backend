@@ -1,3 +1,5 @@
+import { CredentialsAreIncorrect } from './../../../../../shared/src/errors/app-errors';
+import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
 import { AuthorisationService } from './../../../../../shared/src/modules/authorisation/authorisation.service';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -33,12 +35,20 @@ export class UserAuthActor {
     private readonly mailingService: MailingService,
     private readonly authService: AuthService,
     private readonly authorisationService: AuthorisationService,
+    private readonly accountPasswordService: AccountPasswordsService,
   ) {}
 
   async authentication(body: UserAuthenticationDto): Promise<AuthenticationResponseDto> {
     const user = await this.userService.findUserForAuthentication(body.email, true);
 
-    await this.userService.checkIfPasswordsMatch(body.password, user.account.credential.password);
+    const passwordMatches = await this.accountPasswordService.matchPasswords(
+      body.password,
+      user.account.credential.password,
+    );
+
+    if (!passwordMatches) {
+      throw new CredentialsAreIncorrect();
+    }
 
     const payload = this.authService.generateTokenPayload(user.id, undefined, TokenType.Authentication);
     const token = await this.authService.generateIntermediateToken(payload);
@@ -82,15 +92,13 @@ export class UserAuthActor {
 
     const createUserPayload: CreateUserType = {
       email,
-      password,
+      hashedPassword: await this.accountPasswordService.hashPassword(password),
       first_name,
       last_name,
       avatar_url,
       role: AccountRole.User,
     };
     const newUser = await this.userService.createEntity(createUserPayload);
-
-    console.log(newUser);
 
     const tokenPayload = this.authService.generateTokenPayload(newUser.id, undefined, TokenType.Confirmation);
     const token = await this.authService.generateIntermediateToken(tokenPayload);
@@ -169,9 +177,9 @@ export class UserAuthActor {
 
     if (password !== repeatPassword) throw new PasswordsDoNotMatch();
 
-    if (user.account.credential.changePasswordToken !== token) throw new TokenInvalidOrExpired(); //Weird staff
+    if (user.account.credential.change_password_token !== token) throw new TokenInvalidOrExpired(); //Weird staff
 
-    user.account.credential.password = await bcrypt.hash(body.password, await bcrypt.genSalt());
+    user.account.credential.password = await this.accountPasswordService.hashPassword(body.password);
 
     await this.userService.updateUserTokenForPasswordChanging(user, null);
 

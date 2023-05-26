@@ -17,5 +17,5 @@ export class CreateOauthClientDto {
   @IsUrl({ protocols: ['http', 'https'] }, { each: true })
   @ArrayNotEmpty()
   @IsNotEmpty({ each: true })
-  redirectUrls: string[];
+  redirectUris: string[];
 }

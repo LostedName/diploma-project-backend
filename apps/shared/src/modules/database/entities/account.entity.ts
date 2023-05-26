@@ -11,6 +11,7 @@ export enum AccountRole {
 
 export enum AuthenticationMethod {
   Password = 1,
+  OAuth = 2,
 }
 
 export enum AccountStatus {

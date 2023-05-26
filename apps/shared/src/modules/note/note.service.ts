@@ -2,10 +2,7 @@ import { merge } from 'lodash';
 import { EditNoteDto } from './../../../../backend/src/modules/user/note/dto/edit-note.dto';
 import { NoteEntity } from './../database/entities/note.entity';
 import { CreateNoteDto } from './../../../../backend/src/modules/user/note/dto/create-note.dto';
-import {
-  NotesListDto,
-  NotesListResponseDto,
-} from './../../../../backend/src/modules/user/note/dto/notes-list.dto';
+import { NotesListDto, NotesListResponseDto } from './../../../../backend/src/modules/user/note/dto/notes-list.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, LoggerService } from '@nestjs/common';
@@ -25,15 +22,12 @@ export class NoteService {
     this.logger = logger.withContext('NoteService');
   }
 
-  async getUserNotesList(
-    userId: number,
-    params: NotesListDto,
-  ): Promise<NotesListResponseDto> {
+  async getUserNotesList(userId: number, params: NotesListDto): Promise<NotesListResponseDto> {
     let queryBuilder = this.noteRepository
       .createQueryBuilder('notes')
       .innerJoin('notes.user', 'user')
       .where('user.id = :userId', { userId })
-      .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at']);
+      .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at', 'notes.updated_at']);
 
     queryBuilder = params.filters().apply(queryBuilder);
 
@@ -52,21 +46,14 @@ export class NoteService {
     return note;
   }
 
-  async createUserNote(
-    userId: number,
-    createNoteDto: CreateNoteDto,
-  ): Promise<NoteEntity> {
+  async createUserNote(userId: number, createNoteDto: CreateNoteDto): Promise<NoteEntity> {
     const noteEntity = this.createNote(createNoteDto);
     noteEntity.user = <UserEntity>{ id: userId };
     const note = await this.saveNote(noteEntity);
     return await this.findUserNoteById(userId, note.id);
   }
 
-  async editUserNote(
-    userId: number,
-    noteId: number,
-    editNoteDto: EditNoteDto,
-  ): Promise<NoteEntity> {
+  async editUserNote(userId: number, noteId: number, editNoteDto: EditNoteDto): Promise<NoteEntity> {
     const noteEntity = await this.findUserNoteById(userId, noteId);
     if (!noteEntity) {
       throw new NoteNotFound();
@@ -85,10 +72,7 @@ export class NoteService {
     return noteEntity;
   }
 
-  async findUserNoteById(
-    userId: number,
-    noteId: number,
-  ): Promise<NoteEntity | null> {
+  async findUserNoteById(userId: number, noteId: number): Promise<NoteEntity | null> {
     return await this.noteRepository
       .createQueryBuilder('notes')
       .innerJoin('notes.user', 'user')
@@ -96,7 +80,7 @@ export class NoteService {
         userId,
         noteId,
       })
-      .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at'])
+      .select(['notes.id', 'notes.title', 'notes.content', 'notes.created_at', 'notes.updated_at'])
       .getOne();
   }
 

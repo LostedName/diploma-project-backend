@@ -1,13 +1,5 @@
 import { UserEntity } from './../../../../../../shared/src/modules/database/entities/user.entity';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsUrl,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsValidPassword } from 'apps/shared/src/utils/validation/password-validation.decorator';
 import { DtoProperty } from 'apps/shared/src/utils/pipes/sanitize-dto.pipe';

@@ -3,8 +3,8 @@ import { QueryContext, QuerySelectExpression } from '../query-expressions';
 import { IsIn, IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export type PaginationLimit = 25 | 50 | 100;
-const supportedLimits: PaginationLimit[] = [25, 50, 100];
+export type PaginationLimit = 10 | 12 | 25 | 50 | 100;
+const supportedLimits: PaginationLimit[] = [10, 12, 25, 50, 100];
 
 export class PaginationExpressionParams {
   @IsInt()
@@ -23,10 +23,7 @@ export class PaginationExpression extends QuerySelectExpression {
     super();
   }
 
-  select<T>(
-    selectBuilder: SelectQueryBuilder<T>,
-    context: QueryContext = new QueryContext(),
-  ): SelectQueryBuilder<T> {
+  select<T>(selectBuilder: SelectQueryBuilder<T>, context: QueryContext = new QueryContext()): SelectQueryBuilder<T> {
     const limit = this.params.pageSize || PaginationExpression.defaultLimit;
     const page = Math.max(this.params.page, 1);
     const offset = (page - 1) * limit;

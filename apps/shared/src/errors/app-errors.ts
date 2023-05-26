@@ -265,9 +265,9 @@ export class OauthClientRelationsAreIncorrect extends AppError implements HttpEr
   httpStatus: number = OauthClientRelationsAreIncorrect.httpStatus;
 }
 
-export class RedirectUrlMismatch extends AppError implements HttpErrorRepresentable {
+export class RedirectUriMismatch extends AppError implements HttpErrorRepresentable {
   constructor() {
-    super(100_4003, 'Oauth client does not contain such redirect url');
+    super(100_4003, 'Oauth client does not contain such redirect uri');
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
@@ -280,6 +280,15 @@ export class OAuthInvalidScope extends AppError implements HttpErrorRepresentabl
   }
 
   static httpStatus: number = HttpStatus.BAD_REQUEST;
+  httpStatus: number = SystemSettingsNotFound.httpStatus;
+}
+
+export class AuthorizationCodeNotFound extends AppError implements HttpErrorRepresentable {
+  constructor() {
+    super(100_4005, 'Authorization code not found');
+  }
+
+  static httpStatus: number = HttpStatus.NOT_FOUND;
   httpStatus: number = SystemSettingsNotFound.httpStatus;
 }
 

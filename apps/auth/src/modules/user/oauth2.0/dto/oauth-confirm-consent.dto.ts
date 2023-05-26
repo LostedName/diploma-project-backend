@@ -1,8 +1,7 @@
-import { ScopeFormat } from './../../../../../../shared/src/modules/oauth/scopes/scopes';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
-export class OAuthScreenParamsDto {
+export class OAuthConfirmConsentDto {
   @ApiProperty({
     example: 'client_id',
     description: 'Client id',
@@ -13,14 +12,23 @@ export class OAuthScreenParamsDto {
   client_id: string;
 
   @ApiProperty({
-    example: 'http://localhost:3000/oauth',
-    description: 'redirect url',
+    example: 'dmitrykarpenkin@gmail.com',
+    description: 'User email',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @ApiProperty({
+    example: 'http://upwork.com/oauth',
+    description: 'redirect uri',
     required: true,
   })
   @IsUrl({ protocols: ['http', 'https'], allow_fragments: true })
   @IsString()
   @IsNotEmpty()
-  redirect_url: string;
+  redirect_uri: string;
 
   @ApiProperty({
     example: 'note:edit note:read',
@@ -32,10 +40,6 @@ export class OAuthScreenParamsDto {
   scopes: string;
 }
 
-export class OAuthScreenResponse {
-  scopeInfo: ScopeFormat;
-  clientLogoUrl: string;
-  clientName: string;
-  clientDescription: string;
-  clientHomeUrl: string;
+export class OAuthConfirmConsentResponse {
+  code: string;
 }

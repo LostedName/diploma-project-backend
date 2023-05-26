@@ -19,15 +19,15 @@ export class AuthService {
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
 
   async generateAccessToken(payload: AuthContent): Promise<string> {
-    return this.singToken(payload, '14d');
+    return this.signToken(payload, '14d');
   }
 
   async generateIntermediateToken(payload: AuthContent): Promise<string> {
-    return this.singToken(payload, '1h');
+    return this.signToken(payload, '1h');
   }
 
   async generateChangePasswordToken(payload: AuthContent): Promise<string> {
-    return this.singToken(payload, '1h');
+    return this.signToken(payload, '1h');
   }
 
   async verifyToken(token: string): Promise<AuthContent> {
@@ -74,7 +74,7 @@ export class AuthService {
     this.userService.removeAuthCodes(authCodes);
   }
 
-  private async singToken(payload: AuthContent, expiresIn: string): Promise<string> {
+  private async signToken(payload: AuthContent, expiresIn: string): Promise<string> {
     return this.jwtService.signAsync(payload, { expiresIn });
   }
 }

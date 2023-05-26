@@ -1,3 +1,4 @@
+import { QueryFilterPipe } from './../../shared/src/utils/query-expression/pipes/query-filter.pipe';
 import { ApiExceptionFilter } from './../../shared/src/errors/api-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { SanitizeDtoPipe } from './../../shared/src/utils/pipes/sanitize-dto.pipe';
@@ -12,6 +13,8 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
+
+  authApp.useGlobalPipes(new QueryFilterPipe());
 
   authApp.useGlobalPipes(
     new ValidationPipe({

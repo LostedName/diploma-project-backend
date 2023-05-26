@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class EditOauthClientDto {
   @IsString()
@@ -25,7 +18,7 @@ export class EditOauthClientDto {
   @IsArray()
   @IsUrl({ protocols: ['http', 'https'] }, { each: true })
   @IsOptional()
-  redirectUrls: string[];
+  redirectUris: string[];
 
   @IsUrl({ protocols: ['http', 'https'] })
   @IsNotEmpty()

@@ -1,3 +1,4 @@
+import { QueryFilterPipe } from './../../shared/src/utils/query-expression/pipes/query-filter.pipe';
 import { ValidationErrorFactory } from 'apps/shared/src/errors/validation-error-factory';
 import { ApiExceptionFilter } from './../../shared/src/errors/api-exception.filter';
 import { SanitizeDtoPipe } from './../../shared/src/utils/pipes/sanitize-dto.pipe';
@@ -12,6 +13,8 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
+
+  app.useGlobalPipes(new QueryFilterPipe());
 
   app.useGlobalPipes(
     new ValidationPipe({

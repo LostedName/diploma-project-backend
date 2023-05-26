@@ -1,19 +1,9 @@
-import {
-  userFullScope,
-  userReadScope,
-} from './../../../../../shared/src/modules/oauth/scopes/scopes';
+import { userFullScope, userReadScope } from './../../../../../shared/src/modules/oauth/scopes/scopes';
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import { AccountRole } from './../../../../../shared/src/modules/database/entities/account.entity';
 import { RoleGuard, Roles } from './../../../guards/role.guard';
 import { Controller, UseGuards, Get, Patch, Body, Query } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiProperty,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserActor } from './user.actor';
 import { UpdateUserProfileDto } from './dto/update-user.dto';
 import { Scopes } from 'apps/backend/src/guards/oauth.guard';
@@ -60,7 +50,7 @@ export class UserController {
     status: 404,
     description: 'User not found',
   })
-  @Scopes(userReadScope)
+  @Scopes(userReadScope, userFullScope)
   @Get('')
   async getProfile(): Promise<UserEntity> {
     return await this.actor.getUserProfile();
@@ -91,9 +81,7 @@ export class UserController {
   })
   @ApiBody({ type: UpdateUserPasswordDto, required: true })
   @Patch('password')
-  async updateUserPassword(
-    @Body() body: UpdateUserPasswordDto,
-  ): Promise<UserEntity> {
+  async updateUserPassword(@Body() body: UpdateUserPasswordDto): Promise<UserEntity> {
     return await this.actor.updateUserPassword(body);
   }
 }

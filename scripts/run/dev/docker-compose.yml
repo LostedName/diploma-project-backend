@@ -1,52 +1,52 @@
 version: '3.0'
 name: dimploma-project-development
 services:
-  diploma_proxy:
-    container_name: "diploma_proxy"
-    image: 'nginx'
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - '3000:3000'
-      - '3001:3001'
-    environment:
-      PORT: '3000'
-    depends_on:
-      - resource_server
-      - auth_server
-    restart: 'always'
+  # diploma_proxy:
+  #   container_name: "diploma_proxy"
+  #   image: 'nginx'
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - '3000:3000'
+  #     - '3001:3001'
+  #   environment:
+  #     PORT: '3000'
+  #   depends_on:
+  #     - resource_server
+  #     - auth_server
+  #   restart: 'always'
 
-  resource_server:
-    container_name: 'resource_server'
-    build:
-      context: ./../../..
-      dockerfile: ./apps/backend/build/docker/dev.Dockerfile
-    volumes:
-      - ./../../../apps/backend:/app/apps/backend
-      - ./../../../apps/shared:/app/apps/shared
-    ports:
-      - '3002:3000'
-    depends_on:
-      - dploma_database
-    env_file:
-      - .env
-    restart: 'always'
+  # resource_server:
+  #   container_name: 'resource_server'
+  #   build:
+  #     context: ./../../..
+  #     dockerfile: ./apps/backend/build/docker/dev.Dockerfile
+  #   volumes:
+  #     - ./../../../apps/backend:/app/apps/backend
+  #     - ./../../../apps/shared:/app/apps/shared
+  #   ports:
+  #     - '3002:3000'
+  #   depends_on:
+  #     - dploma_database
+  #   env_file:
+  #     - .env
+  #   restart: 'always'
 
-  auth_server:
-    container_name: 'auth_server'
-    build:
-      context: ./../../..
-      dockerfile: ./apps/auth/build/docker/dev.Dockerfile
-    volumes:
-      - ./../../../apps/auth:/app/apps/auth
-      - ./../../../apps/shared:/app/apps/shared
-    ports:
-      - '3003:3000'
-    depends_on:
-      - dploma_database
-    env_file:
-      - .auth.env
-    restart: 'always'
+  # auth_server:
+  #   container_name: 'auth_server'
+  #   build:
+  #     context: ./../../..
+  #     dockerfile: ./apps/auth/build/docker/dev.Dockerfile
+  #   volumes:
+  #     - ./../../../apps/auth:/app/apps/auth
+  #     - ./../../../apps/shared:/app/apps/shared
+  #   ports:
+  #     - '3003:3000'
+  #   depends_on:
+  #     - dploma_database
+  #   env_file:
+  #     - .auth.env
+  #   restart: 'always'
 
   dploma_database:
     container_name: 'dploma_database'

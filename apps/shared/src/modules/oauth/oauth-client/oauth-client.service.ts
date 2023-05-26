@@ -45,6 +45,7 @@ export class OauthClientService {
         'oauth_clients.description',
         'oauth_clients.icon_url',
         'oauth_clients.created_at',
+        'oauth_clients.updated_at',
       ]);
 
     queryBuilder = params.filters().apply(queryBuilder);
@@ -68,7 +69,7 @@ export class OauthClientService {
       name: createOauthClientDto.name,
       description: createOauthClientDto.description || null,
       homepage_url: createOauthClientDto.homepageUrl,
-      redirect_urls: createOauthClientDto.redirectUrls.join(';'),
+      redirect_uris: createOauthClientDto.redirectUris.join(';'),
     });
     const savedOauthClient = await this.saveOauthClient(oauthClient);
     savedOauthClient.client_secret = clientSecret;
@@ -106,7 +107,7 @@ export class OauthClientService {
       name: editOauthClientDto.name,
       description: editOauthClientDto.description,
       homepage_url: editOauthClientDto.homepageUrl,
-      redirect_urls: editOauthClientDto.redirectUrls?.join(';'),
+      redirect_uris: editOauthClientDto.redirectUris?.join(';'),
       icon_url: editOauthClientDto.iconUrl,
     });
 
@@ -151,6 +152,10 @@ export class OauthClientService {
       .getOne();
   }
 
+  async compareClientSecrets(clientSecret: string, hashedClientSecret: string): Promise<boolean> {
+    return bcrypt.compare(clientSecret, hashedClientSecret);
+  }
+
   private createOauthClient(oauthClient: Partial<OauthClientEntity>) {
     return this.oauthClientRepository.create(oauthClient);
   }
@@ -177,10 +182,6 @@ export class OauthClientService {
 
   private generateRandomHexString(size: number) {
     return crypto.randomBytes(size).toString('hex');
-  }
-
-  private async matchClientSecrets(clientSecret: string, hashedClientSecret: string): Promise<boolean> {
-    return bcrypt.compare(clientSecret, hashedClientSecret);
   }
 
   private async encryptClientSecret(clientSecret: string): Promise<string> {

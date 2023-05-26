@@ -21,5 +21,5 @@ export class CredentialEntity extends AppEntity {
 
   @ApiProperty({ description: 'User token for password change' })
   @Column({ nullable: true, default: null })
-  changePasswordToken: string;
+  change_password_token: string;
 }

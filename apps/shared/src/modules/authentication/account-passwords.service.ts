@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { isNil } from 'lodash';
 import { PasswordAuthenticator } from './authenticators/password-authenticator';
 import { PasswordsEntity } from '../database/entities/passwords.entity';
@@ -23,27 +22,21 @@ export class AccountPasswordsService {
       throw new CredentialsAreIncorrect();
     }
 
-    if (!(await this.matchPasswords(password, accountPassword))) {
+    if (!(await this.matchPasswords(password, accountPassword.password))) {
       throw new CredentialsAreIncorrect();
     }
 
     return true;
   }
 
-  async bindPassword(
-    account: AccountEntity,
-    password: string,
-  ): Promise<PasswordsEntity> {
+  async bindPassword(account: AccountEntity, password: string): Promise<PasswordsEntity> {
     const accountPassword = this.passwordsRepository.create();
     accountPassword.password = await this.hashPassword(password);
     accountPassword.account = account;
     return this.passwordsRepository.save(accountPassword);
   }
 
-  async changePassword(
-    account: AccountEntity,
-    newPassword: string,
-  ): Promise<PasswordsEntity> {
+  async changePassword(account: AccountEntity, newPassword: string): Promise<PasswordsEntity> {
     const accountPassword = await this.findAccountPasswords(account.email);
     const hashedPassword = await this.hashPassword(newPassword);
     accountPassword.password = hashedPassword;
@@ -54,9 +47,7 @@ export class AccountPasswordsService {
     return new PasswordAuthenticator(email, password, this);
   }
 
-  private async findAccountPasswords(
-    email: string,
-  ): Promise<PasswordsEntity | null> {
+  private async findAccountPasswords(email: string): Promise<PasswordsEntity | null> {
     return this.passwordsRepository
       .createQueryBuilder('passwords')
       .leftJoinAndSelect('passwords.account', 'account')
@@ -64,17 +55,11 @@ export class AccountPasswordsService {
       .getOne();
   }
 
-  private async matchPasswords(
-    password: string,
-    accountPasswords: PasswordsEntity,
-  ): Promise<boolean> {
-    return await this.cryptoService.compare(
-      password,
-      accountPasswords.password,
-    );
+  async matchPasswords(password: string, accountPassword: string): Promise<boolean> {
+    return await this.cryptoService.compare(password, accountPassword);
   }
 
-  private async hashPassword(password: string): Promise<string> {
+  async hashPassword(password: string): Promise<string> {
     return await this.cryptoService.hash(password);
   }
 }

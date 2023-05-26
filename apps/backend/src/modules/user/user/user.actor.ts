@@ -1,8 +1,5 @@
 import { RedisService } from './../../../../../shared/src/modules/redis/redis.service';
-import {
-  ForbiddenAction,
-  UserNotFound,
-} from './../../../../../shared/src/errors/app-errors';
+import { CredentialsAreIncorrect, ForbiddenAction, UserNotFound } from './../../../../../shared/src/errors/app-errors';
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
 import { AccountPasswordsService } from './../../../../../shared/src/modules/authentication/account-passwords.service';
 import { RequestActor } from '../../../../../shared/src/actor/request.actor';
@@ -43,9 +40,7 @@ export class UserActor extends RequestActor {
     return await this.userService.findUserById(user.account.id);
   }
 
-  async updateUserProfile(
-    updateUserDto: UpdateUserProfileDto,
-  ): Promise<UserEntity> {
+  async updateUserProfile(updateUserDto: UpdateUserProfileDto): Promise<UserEntity> {
     const user = this.getUserIdentity();
     return await this.userService.updateUser(user, {
       first_name: updateUserDto.firstName,
@@ -54,19 +49,20 @@ export class UserActor extends RequestActor {
     });
   }
 
-  async updateUserPassword(
-    updatePasswordDto: UpdateUserPasswordDto,
-  ): Promise<UserEntity> {
+  async updateUserPassword(updatePasswordDto: UpdateUserPasswordDto): Promise<UserEntity> {
     const user = this.getUserIdentity();
 
     const oldPassword = updatePasswordDto.oldPassword;
     const newPassword = updatePasswordDto.newPassword;
+    console.log(1);
+    const userEntity = await this.userService.findUserForResetPassword(user.account.id);
 
-    await this.passwordsService.hasBoundPassword(
-      user.account.email,
-      oldPassword,
-    );
-    await this.passwordsService.changePassword(user.account, newPassword);
+    if (!(await this.passwordsService.matchPasswords(oldPassword, userEntity.account.credential.password))) {
+      throw new CredentialsAreIncorrect();
+    }
+
+    // await this.passwordsService.hasBoundPassword(user.account.email, oldPassword);
+    await this.passwordsService.changePassword(userEntity.account, newPassword);
 
     return user;
   }

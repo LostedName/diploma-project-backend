@@ -6,10 +6,7 @@ import * as crypto from 'lcryptowrap';
 export class CryptoService {
   readonly logger: LoggerService;
 
-  constructor(
-    private readonly configService: ConfigService,
-    logger: AppLogger,
-  ) {
+  constructor(private readonly configService: ConfigService, logger: AppLogger) {
     this.logger = logger.withContext('CryptoService');
   }
 

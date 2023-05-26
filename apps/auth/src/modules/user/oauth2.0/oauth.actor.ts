@@ -1,10 +1,12 @@
+import { OAuthAuthenticator } from './../../../../../shared/src/modules/authentication/authenticators/oauth-authenticator';
+import { OauthService } from './../../../../../shared/src/modules/oauth/oauth/oauth.service';
 import { OauthClientService } from './../../../../../shared/src/modules/oauth/oauth-client/oauth-client.service';
 import { RequestActor } from './../../../../../shared/src/actor/request.actor';
 import {
   CredentialsAreIncorrect,
   OAuthInvalidScope,
   OauthClientNotFound,
-  RedirectUrlMismatch,
+  RedirectUriMismatch,
   UserNotFound,
 } from './../../../../../shared/src/errors/app-errors';
 import { UserEntity } from './../../../../../shared/src/modules/database/entities/user.entity';
@@ -19,8 +21,10 @@ import { PasswordAuthenticator } from './../../../../../shared/src/modules/authe
 import { AppLogger } from './../../../../../shared/src/modules/logging/logger.service';
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
 import { OAuthLoginDto, OAuthLoginResultDto } from './dto/oauth-dto';
-import { OAuthScreenParamsDto, OAuthScreenResponse } from './dto/oauth-screen.dto';
+import { OAuthScreenParamsDto, OAuthScreenResponse } from './dto/oauth-consent-screen.dto';
 import { checkScopesExistance, formatAnswerScopes } from './../../../../../shared/src/modules/oauth/scopes/scopes';
+import { OAuthConfirmConsentDto, OAuthConfirmConsentResponse } from './dto/oauth-confirm-consent.dto';
+import { OAuthCodeExchangeDto, OAuthCodeExchangeResponse } from './dto/oauth-code-exchange.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OAuthActor extends RequestActor {
@@ -32,25 +36,26 @@ export class OAuthActor extends RequestActor {
     private readonly userService: UserService,
     private readonly passwordsService: AccountPasswordsService,
     private readonly oauthClientService: OauthClientService,
+    private readonly oauthService: OauthService,
     logger: AppLogger,
   ) {
     super();
     this.logger = logger.withContext('UserAuthActor');
   }
 
-  async getOAuthScreen(params: OAuthScreenParamsDto): Promise<OAuthScreenResponse> {
+  async getOauthConsentScreen(params: OAuthScreenParamsDto): Promise<OAuthScreenResponse> {
     //check client id
     const oauthClient = await this.oauthClientService.findUserOauthClientByClientPublic(params.client_id);
 
     if (!oauthClient) {
       throw new OauthClientNotFound();
     }
-    //check redirect url
-    const redirectUrls = oauthClient.redirect_urls.split(';');
-    const redirectUrl = redirectUrls.some((url) => params.redirect_url === url);
+    //check redirect uri
+    const redirectUris = oauthClient.redirect_uris.split(';');
+    const redirectUri = redirectUris.some((url) => params.redirect_uri === url);
 
-    if (!redirectUrl) {
-      throw new RedirectUrlMismatch();
+    if (!redirectUri) {
+      throw new RedirectUriMismatch();
     }
 
     //check scopes existance
@@ -71,10 +76,42 @@ export class OAuthActor extends RequestActor {
     };
   }
 
-  async loginOAuth(oauthloginDto: OAuthLoginDto): Promise<OAuthLoginResultDto> {
-    const authenticator = new PasswordAuthenticator(oauthloginDto.email, oauthloginDto.password, this.passwordsService);
+  async confirmConsentScreen({
+    client_id,
+    email,
+    redirect_uri,
+    scopes,
+  }: OAuthConfirmConsentDto): Promise<OAuthConfirmConsentResponse> {
+    const authorizationCode = await this.oauthService.createAuthorizationCode(client_id, email, redirect_uri, scopes);
+    return {
+      code: authorizationCode.code,
+    };
+  }
 
-    return this.authorizeOAuth(authenticator, 'client Id', oauthloginDto.scopes);
+  async exchangeCodeToToken({
+    client_id,
+    client_secret,
+    redirect_uri,
+    code,
+  }: OAuthCodeExchangeDto): Promise<OAuthCodeExchangeResponse> {
+    const authorizationCode = await this.oauthService.matchAuthorizationCode(
+      client_id,
+      client_secret,
+      redirect_uri,
+      code,
+    );
+    const authenticator = new OAuthAuthenticator(authorizationCode.userEmail);
+
+    const { user, token } = await this.authorizeOAuth(
+      authenticator,
+      authorizationCode.clientId,
+      authorizationCode.scopes.split(' '),
+    );
+    return {
+      access_token: token,
+      token_type: 'Bearer',
+      scopes: authorizationCode.scopes,
+    };
   }
 
   private async authorizeOAuth(authenticator: Authenticator, clientId: string, scopes: string[]) {

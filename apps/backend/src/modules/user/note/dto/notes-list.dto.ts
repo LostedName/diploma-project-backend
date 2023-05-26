@@ -33,15 +33,11 @@ export class NotesListDto {
 
   filters(): QueryExpression {
     return QueryExpressionFactory.expressionGroup(
-      QueryExpressionFactory.sort<NoteEntity>('created_at', this.createdAtSort),
-      QueryExpressionFactory.pagination(this.pagination) ||
-        PaginationExpression.default(),
+      QueryExpressionFactory.sort('notes.updated_at', this.createdAtSort),
+      QueryExpressionFactory.pagination(this.pagination) || PaginationExpression.default(),
       QueryExpressionFactory.and(
-        QueryExpressionFactory.equal<NoteEntity>('id', this.id),
-        QueryExpressionFactory.between<NoteEntity>(
-          'created_at',
-          this.createdAtBetween,
-        ),
+        QueryExpressionFactory.equal('notes.id', this.id),
+        QueryExpressionFactory.between('notes.updated_at', this.createdAtBetween),
       ),
     );
   }

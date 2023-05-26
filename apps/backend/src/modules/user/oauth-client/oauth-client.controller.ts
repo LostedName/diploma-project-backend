@@ -3,33 +3,13 @@ import { PaginationExpression } from './../../../../../shared/src/utils/query-ex
 import { OauthClientEntity } from '../../../../../shared/src/modules/database/entities/oauth-client.entity';
 import { AccountRole } from '../../../../../shared/src/modules/database/entities/account.entity';
 import { RoleGuard, Roles } from '../../../guards/role.guard';
-import {
-  Body,
-  Controller,
-  Post,
-  UseGuards,
-  Patch,
-  Delete,
-  Param,
-  Query,
-  Get,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Post, UseGuards, Patch, Delete, Param, Query, Get } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OauthClientActor } from './oauth-client.actor';
 import { CreateOauthClientDto } from './dto/create-oauth-client.dto';
 import { EditOauthClientDto } from './dto/edit-oauth-client.dto';
 import { GetOauthClientParamsDto } from './dto/get-oauth-client.dto';
-import {
-  OauthClientsListDto,
-  OauthClientsListResponseDto,
-} from './dto/oauth-clients-list.dto';
+import { OauthClientsListDto, OauthClientsListResponseDto } from './dto/oauth-clients-list.dto';
 
 @ApiTags('Oauth client CRUD')
 @ApiBearerAuth()
@@ -81,9 +61,7 @@ export class OauthClientController {
     description: 'Returns list of notes',
   })
   @Get('/list')
-  async getNotesList(
-    @Query() params: OauthClientsListDto,
-  ): Promise<OauthClientsListResponseDto> {
+  async getNotesList(@Query() params: OauthClientsListDto): Promise<OauthClientsListResponseDto> {
     return this.actor.getOauthClientsList(params);
   }
 
@@ -94,9 +72,7 @@ export class OauthClientController {
     description: 'Returns new created oauth client credentials',
   })
   @Post('')
-  async createOauthClient(
-    @Body() createOauthClientDto: CreateOauthClientDto,
-  ): Promise<OauthClientEntity> {
+  async createOauthClient(@Body() createOauthClientDto: CreateOauthClientDto): Promise<OauthClientEntity> {
     return this.actor.createOauthClient(createOauthClientDto);
   }
 
@@ -113,9 +89,7 @@ export class OauthClientController {
     description: 'Returns oauth client by id',
   })
   @Get('/:clientId')
-  async getOauthClient(
-    @Param() params: GetOauthClientParamsDto,
-  ): Promise<OauthClientEntity> {
+  async getOauthClient(@Param() params: GetOauthClientParamsDto): Promise<OauthClientEntity> {
     return this.actor.getOauthClient(params.clientId);
   }
 
@@ -132,9 +106,7 @@ export class OauthClientController {
     description: 'Returns deleted oauth client',
   })
   @Delete('/:clientId')
-  async deleteOauthClient(
-    @Param() params: GetOauthClientParamsDto,
-  ): Promise<OauthClientEntity> {
+  async deleteOauthClient(@Param() params: GetOauthClientParamsDto): Promise<OauthClientEntity> {
     return this.actor.deleteOauthClient(params.clientId);
   }
 
@@ -171,9 +143,7 @@ export class OauthClientController {
     description: 'Returns updated oauth client',
   })
   @Get('/generate-client/:clientId')
-  async generateNewOauthClientSecret(
-    @Param() params: GetOauthClientParamsDto,
-  ): Promise<OauthClientEntity> {
+  async generateNewOauthClientSecret(@Param() params: GetOauthClientParamsDto): Promise<OauthClientEntity> {
     return this.actor.generateNewClientSecret(params.clientId);
   }
 }

@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  DeleteDateColumn,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, DeleteDateColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AppEntity } from './app.entity';
 import { UserEntity } from './user.entity';
@@ -74,13 +68,13 @@ export class OauthClientEntity extends AppEntity {
   homepage_url: string;
 
   @ApiProperty({
-    example: 'Redirect urls',
-    description: 'Semicolon separated redirect urls',
+    example: 'Redirect uris',
+    description: 'Semicolon separated redirect uris',
     type: String,
     required: true,
   })
   @Column()
-  redirect_urls: string;
+  redirect_uris: string;
 
   @ApiProperty({
     example: null,

@@ -31,13 +31,11 @@ export class JwtAuthGuard implements CanActivate {
 
     if (req.auth.type === TokenType.Access) {
       const expression = this.checkExpirationDate(token);
-
       if (expression) {
-        await this.singNewToken(req, res);
+        await this.signNewToken(req, res);
       }
     }
 
-    console.log(req.auth);
     return true;
   }
 
@@ -86,7 +84,7 @@ export class JwtAuthGuard implements CanActivate {
     return diff < MAX_DAYS_NUMBER;
   }
 
-  private async singNewToken(req: Request, res: Response): Promise<void> {
+  private async signNewToken(req: Request, res: Response): Promise<void> {
     const payload: AuthContent = {
       userId: req.auth.userId,
       role: req.auth.role,

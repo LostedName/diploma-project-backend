@@ -9,15 +9,9 @@ export class RedisService implements OnModuleDestroy {
   readonly logger: LoggerService;
   protected _instance: IORedis.Redis = null;
 
-  constructor(
-    private readonly configService: ConfigService,
-    logger: AppLogger,
-  ) {
+  constructor(private readonly configService: ConfigService, logger: AppLogger) {
     this.logger = logger.withContext('RedisService');
-    const { host, port, password } = new RedisConfiguration(
-      this.configService,
-      this.logger,
-    ).connectionConfig;
+    const { host, port, password } = new RedisConfiguration(this.configService, this.logger).connectionConfig;
 
     this._instance = new IORedis.Redis(port, host, { password });
   }
@@ -26,11 +20,7 @@ export class RedisService implements OnModuleDestroy {
     return await this._instance.get(key);
   }
 
-  async set(
-    key: string,
-    value: string | number | Buffer,
-    ttl?: number,
-  ): Promise<'OK'> {
+  async set(key: string, value: string | number | Buffer, ttl?: number): Promise<'OK'> {
     await this._instance.set(key, value);
     if (ttl) {
       await this._instance.expire(key, ttl);
