@@ -33,11 +33,11 @@ export class OauthClientsListDto {
 
   filters(): QueryExpression {
     return QueryExpressionFactory.expressionGroup(
-      QueryExpressionFactory.sort<OauthClientEntity>('created_at', this.createdAtSort),
+      QueryExpressionFactory.sort('oauth_clients.created_at', this.createdAtSort),
       QueryExpressionFactory.pagination(this.pagination) || PaginationExpression.default(),
       QueryExpressionFactory.and(
-        QueryExpressionFactory.equal<OauthClientEntity>('id', this.id),
-        QueryExpressionFactory.between<OauthClientEntity>('created_at', this.createdAtBetween),
+        QueryExpressionFactory.equal('oauth_clients.id', this.id),
+        QueryExpressionFactory.between('oauth_clients.created_at', this.createdAtBetween),
       ),
     );
   }

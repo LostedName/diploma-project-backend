@@ -1,14 +1,6 @@
-import {
-  UnauthorisedAction,
-  ForbiddenAction,
-} from './../../../shared/src/errors/app-errors';
+import { UnauthorisedAction, ForbiddenAction } from './../../../shared/src/errors/app-errors';
 import { AccountRole } from './../../../shared/src/modules/database/entities/account.entity';
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  SetMetadata,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { extractRequestIdentity } from '../modules/request-identity/identity-extractor.middleware';
 import { isNil } from 'lodash';
@@ -22,17 +14,11 @@ export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.getAllAndOverride(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    console.log('Role guard');
+    const requiredRoles = this.reflector.getAllAndOverride(ROLES_KEY, [context.getHandler(), context.getClass()]);
     if (!requiredRoles) {
       return true;
     }
-    const requestIdentity = extractRequestIdentity(
-      context.switchToHttp().getRequest(),
-    );
+    const requestIdentity = extractRequestIdentity(context.switchToHttp().getRequest());
 
     if (isNil(requestIdentity?.authorisation)) {
       throw new UnauthorisedAction();
@@ -43,10 +29,7 @@ export class RoleGuard implements CanActivate {
       throw new ForbiddenAction();
     }
 
-    if (
-      roleClaims.role === AccountRole.Admin &&
-      requiredRoles.includes(AccountRole.Admin)
-    ) {
+    if (roleClaims.role === AccountRole.Admin && requiredRoles.includes(AccountRole.Admin)) {
       return true;
     }
 

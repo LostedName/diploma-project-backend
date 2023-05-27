@@ -54,7 +54,6 @@ export class UserActor extends RequestActor {
 
     const oldPassword = updatePasswordDto.oldPassword;
     const newPassword = updatePasswordDto.newPassword;
-    console.log(1);
     const userEntity = await this.userService.findUserForResetPassword(user.account.id);
 
     if (!(await this.passwordsService.matchPasswords(oldPassword, userEntity.account.credential.password))) {

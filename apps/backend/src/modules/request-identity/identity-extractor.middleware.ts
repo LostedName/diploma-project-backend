@@ -15,9 +15,7 @@ import {
 } from '../../../../shared/src/modules/authorisation/authorisations/app-authorisation';
 import { AdminService } from '../../../../shared/src/modules/admin/admin.service';
 
-export function extractRequestIdentity(
-  request: RequestWithIdentity,
-): RequestIdentity | undefined {
+export function extractRequestIdentity(request: RequestWithIdentity): RequestIdentity | undefined {
   return request.requestIdentity || undefined;
 }
 
@@ -29,19 +27,12 @@ export class IdentityExtractorMiddleware implements NestMiddleware {
     readonly userService: UserService,
   ) {}
 
-  async use(
-    req: RequestWithIdentity,
-    res: Response,
-    next: NextFunction,
-  ): Promise<any> {
+  async use(req: RequestWithIdentity, res: Response, next: NextFunction): Promise<any> {
     const token = this.extractToken(req);
-    console.log('Extract middleware');
     if (isNil(token)) {
       req.requestIdentity = RequestIdentity.createAnonymous();
     } else {
-      const authorisation = await this.authorisationService.decodeAuthorisation(
-        token,
-      );
+      const authorisation = await this.authorisationService.decodeAuthorisation(token);
       const mainClaims = await authorisation.getClaim(MainClaims);
       const roleClaim = await authorisation.getClaim(RoleClaims);
       let user: AdminEntity | UserEntity | null = null;
@@ -60,11 +51,7 @@ export class IdentityExtractorMiddleware implements NestMiddleware {
           throw new BadToken();
         }
       }
-      req.requestIdentity = new RequestIdentity(
-        mainClaims.sub,
-        user,
-        authorisation,
-      );
+      req.requestIdentity = new RequestIdentity(mainClaims.sub, user, authorisation);
     }
 
     next();

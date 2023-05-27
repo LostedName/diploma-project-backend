@@ -137,7 +137,6 @@ export class UserService {
       .getOne();
 
     if (checkIfExists && !candidate) throw new UserNotFound();
-    console.log('CANDIDATE', candidate);
     return candidate;
   }
 
